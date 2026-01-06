@@ -1,6 +1,6 @@
 # Code Dump: cod_zombie
 
-## cod_zombie/index.html
+## cod_zombie/game.html
 
 ```html
 <!doctype html>
@@ -23,6 +23,9 @@
                     <span id="weaponName">VX-9 "Nightfall"</span>
                 </div>
                 <div class="ui-item">Wave: <span id="wave">1</span></div>
+                <div class="ui-item">
+                    Zombies: <span id="zombiesLeft">0</span>
+                </div>
                 <div class="ui-item">Kills: <span id="kills">0</span></div>
                 <div class="ui-item">Points: <span id="points">0</span></div>
                 <div class="ui-item">
@@ -221,6 +224,56 @@ body {
     box-shadow: 0 0 20px rgba(255, 68, 68, 0.4);
 }
 
+/* Reload Spinner Animation */
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.reloading-icon {
+    display: inline-block;
+    margin-left: 10px;
+    width: 12px;
+    height: 12px;
+    border: 2px solid rgba(255, 204, 0, 0.3);
+    border-top: 2px solid #ffcc00;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    vertical-align: middle;
+}
+
+/* Optional: Pulse effect for the ammo text while reloading */
+.ammo-reloading {
+    color: #ff4444 !important;
+    font-style: italic;
+}
+
+#wave {
+    transition: all 0.3s ease;
+}
+
+/* Add a class for the wave text when waiting */
+.wave-waiting {
+    animation: pulse-red 1s infinite;
+    color: #ff4444 !important;
+}
+
+@keyframes pulse-red {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
 ```
 
 ## cod_zombie/js/bullet.js
@@ -367,7 +420,7 @@ export const BULLET_HEIGHT = 10;
 export const ZOMBIE_WIDTH = 25;
 export const ZOMBIE_HEIGHT = 35;
 export const ZOMBIE_INITIAL_SPEED_MULTIPLIER = 0.1;
-export const ZOMBIE_INITIAL_HEALTH_MULTIPLIER = 0.5;
+export const ZOMBIE_INITIAL_HEALTH_MULTIPLIER = 15; // Increased from 0.5 to 15
 export const ZOMBIE_BASE_COUNT = 3;
 export const ZOMBIE_COUNT_PER_WAVE = 2;
 
@@ -501,19 +554,21 @@ export class Game {
   gameLoop() {
     if (this.isGameOver) return;
 
-    // Update
     this.player.update(this.canvas.width, this.canvas.height);
 
     const fireDataArray = this.weaponManager.update();
     if (fireDataArray) {
       fireDataArray.forEach((fireData) => {
-        this.bulletManager.addBullet(
-          this.player.x + this.player.width / 2,
-          this.player.y + this.player.height / 2,
-          fireData.target.x,
-          fireData.target.y,
-          fireData,
-        );
+        // Add null check here
+        if (fireData) {
+          this.bulletManager.addBullet(
+            this.player.x + this.player.width / 2,
+            this.player.y + this.player.height / 2,
+            fireData.target.x,
+            fireData.target.y,
+            fireData,
+          );
+        }
       });
     }
 
@@ -783,26 +838,53 @@ export class UIManager {
   }
 
   updateUI(game) {
-    const weaponInfo = game.getWeaponInfo();
+    const weapon = game.weaponManager.getCurrentWeapon(); //
+    const weaponInfo = game.getWeaponInfo(); //
 
-    if (weaponInfo) {
-      this.uiElements.ammo.textContent = weaponInfo.currentAmmo;
+    if (weaponInfo && weapon) {
+      const ammoElement = this.uiElements.ammo;
+
+      // Check if the weapon is currently in its reloading state
+      if (weapon.isReloading) {
+        ammoElement.innerHTML = `RELOADING <span class="reloading-icon"></span>`;
+        ammoElement.classList.add("ammo-reloading");
+      } else {
+        ammoElement.textContent = weaponInfo.currentAmmo;
+        ammoElement.classList.remove("ammo-reloading");
+      }
+
       const maxAmmoElement = document.getElementById("maxAmmo");
       if (maxAmmoElement) {
         maxAmmoElement.textContent = weaponInfo.magazineCapacity;
       }
 
-      // Add weapon name display (update HTML to include this)
       const weaponNameElement = document.getElementById("weaponName");
       if (weaponNameElement) {
         weaponNameElement.textContent = weaponInfo.name;
       }
     }
 
-    this.uiElements.wave.textContent = game.wave;
-    this.uiElements.kills.textContent = game.kills;
-    this.uiElements.points.textContent = game.points;
-    this.uiElements.health.textContent = Math.max(0, Math.floor(game.health));
+    const waveElement = this.uiElements.wave;
+    if (game.waveManager.isWaitingForNextWave) {
+      waveElement.textContent = "PREPARING...";
+      waveElement.style.color = "#ffcc00"; // Turn yellow during pause
+      waveElement.classList.add("wave-waiting");
+    } else {
+      waveElement.textContent = game.wave;
+      waveElement.style.color = "#fff";
+      waveElement.classList.remove("wave-waiting");
+    }
+
+    // Update remaining zombies
+    const zombiesLeftElement = document.getElementById("zombiesLeft");
+    if (zombiesLeftElement) {
+      zombiesLeftElement.textContent = game.zombieManager.zombies.length;
+    }
+
+    this.uiElements.wave.textContent = game.wave; //
+    this.uiElements.kills.textContent = game.kills; //
+    this.uiElements.points.textContent = game.points; //
+    this.uiElements.health.textContent = Math.max(0, Math.floor(game.health)); //
   }
 
   showGameOver(game) {
@@ -825,15 +907,34 @@ export class UIManager {
 // cod_zombie/js/waveManager.js
 
 export class WaveManager {
+  constructor() {
+    this.isWaitingForNextWave = false;
+    this.waveDelay = 3000; // 3 second pause between rounds
+  }
+
   checkWaveComplete(zombies, game, zombieManager) {
-    if (zombies.length === 0 && game.wave > 0) {
-      game.wave += 1;
-      game.ammo = game.maxAmmo;
-      zombieManager.spawnZombies(
-        game.canvas.width,
-        game.canvas.height,
-        game.wave,
-      );
+    // If all zombies are dead and we aren't already in the middle of a countdown
+    if (zombies.length === 0 && !this.isWaitingForNextWave) {
+      this.isWaitingForNextWave = true;
+
+      // Logic for ending current wave
+      setTimeout(() => {
+        game.wave += 1;
+
+        // Optional: Refill ammo on new round like COD (or keep as is)
+        const weapon = game.weaponManager.getCurrentWeapon();
+        if (weapon) {
+          weapon.reserveAmmo = weapon.maxAmmo - weapon.magazineCapacity;
+        }
+
+        zombieManager.spawnZombies(
+          game.canvas.width,
+          game.canvas.height,
+          game.wave,
+        );
+
+        this.isWaitingForNextWave = false;
+      }, this.waveDelay);
     }
   }
 }
@@ -956,8 +1057,8 @@ export class HandgunVX9Nightfall extends WeaponBase {
       movementPenalty: -0.05,
       drawTime: 0.35, // seconds
 
-      fireMode: "semi", // semi, burst, auto
-      // burstCount: 3, // comment this if not burst
+      fireMode: "burst", // semi, burst, auto
+      burstCount: 3, // comment this if not burst
 
       // Special Effects
       specialEffects: [
@@ -1077,10 +1178,13 @@ export class WeaponBase {
     this._burstsLeft = 0;
     this._isBursting = false;
     this._hasFiredInSemi = false;
+
+    // Reload Sound
+    this.reloadSound = new Audio("assets/handgun_reload.mp3");
   }
 
   canFire() {
-    if (this.isReloading || this.currentAmmo <= 0 || this._isBursting) {
+    if (this.isReloading || this.currentAmmo <= 0) {
       return false;
     }
     const now = Date.now();
@@ -1089,6 +1193,11 @@ export class WeaponBase {
   }
 
   startFiring(targetX, targetY) {
+    // Allow the firing state to start even with 0 ammo to trigger the auto-reload
+    if (this.currentAmmo <= 0) {
+      this.reload();
+    }
+
     this.isFiring = true;
     this._target.x = targetX;
     this._target.y = targetY;
@@ -1109,8 +1218,23 @@ export class WeaponBase {
   }
 
   _getFireData() {
-    this.currentAmmo--;
-    this.lastFireTime = Date.now();
+    // If we have no ammo left in the magazine
+    if (this.currentAmmo <= 0) {
+      this.reload(); // Automatically trigger the reload process
+      this.stopFiring(); // Stop the current firing sequence
+      return null;
+    }
+
+    this.currentAmmo--; // Deduct ammo
+    this.lastFireTime = Date.now(); // Record the fire time
+
+    // If the last bullet was just fired, trigger an automatic empty reload
+    if (this.currentAmmo <= 0) {
+      this.reload(); // Start the emptyReloadTime duration
+      this._isBursting = false;
+      this._burstsLeft = 0;
+    }
+
     return {
       damage: this.baseDamage,
       speed: this.bulletSpeed,
@@ -1121,12 +1245,14 @@ export class WeaponBase {
 
   update() {
     const fireDataArray = [];
+    const now = Date.now();
 
     switch (this.fireMode) {
       case "semi":
         if (this.isFiring && this._hasFiredInSemi && this.canFire()) {
           fireDataArray.push(this._getFireData());
-          this.isFiring = false; // Consume the 'firing' state for semi-auto
+          this._hasFiredInSemi = false; // Reset so they must click again
+          this.isFiring = false;
         }
         break;
 
@@ -1137,14 +1263,23 @@ export class WeaponBase {
         break;
 
       case "burst":
-        if (this._isBursting && this._burstsLeft > 0 && this.canFire()) {
-          fireDataArray.push(this._getFireData());
-          this._burstsLeft--;
-          if (this._burstsLeft === 0 || this.currentAmmo === 0) {
-            this._isBursting = false;
+        if (this.isFiring && !this._isBursting) {
+          this._isBursting = true;
+          this._burstsLeft = this.burstCount;
+        }
+
+        // Logic: If we are currently in the middle of a burst sequence
+        if (this._isBursting && this._burstsLeft > 0) {
+          if (this.canFire()) {
+            fireDataArray.push(this._getFireData());
+            this._burstsLeft--;
+
+            if (this._burstsLeft === 0 || this.currentAmmo === 0) {
+              this._isBursting = false;
+              // Optional: Add a longer delay here for "between bursts"
+              this.lastFireTime = now;
+            }
           }
-        } else if (this._burstsLeft === 0) {
-          this._isBursting = false;
         }
         break;
     }
@@ -1161,8 +1296,13 @@ export class WeaponBase {
       return false;
 
     this.isReloading = true;
-    const reloadDuration =
-      this.currentAmmo === 0 ? this.emptyReloadTime : this.reloadTime;
+
+    // Determine which duration to use
+    const isEmpty = this.currentAmmo === 0;
+    const reloadDuration = isEmpty ? this.emptyReloadTime : this.reloadTime;
+
+    // Play Sound with adjusted speed
+    this.playReloadSound(reloadDuration);
 
     setTimeout(() => {
       const ammoNeeded = this.magazineCapacity - this.currentAmmo;
@@ -1174,6 +1314,25 @@ export class WeaponBase {
     }, reloadDuration * 1000);
 
     return true;
+  }
+
+  playReloadSound(targetDuration) {
+    if (!this.reloadSound) return;
+
+    // Reset sound if it was already playing
+    this.reloadSound.pause();
+    this.reloadSound.currentTime = 0;
+
+    // Calculate playback rate: (Original Duration / Target Duration)
+    // Note: This requires the metadata to be loaded to get duration accurately
+    if (this.reloadSound.duration) {
+      this.reloadSound.playbackRate =
+        this.reloadSound.duration / targetDuration;
+    }
+
+    this.reloadSound
+      .play()
+      .catch((e) => console.log("Audio play blocked until user interaction."));
   }
 
   getInfo() {

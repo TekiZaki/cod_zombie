@@ -11,23 +11,51 @@ export class UIManager {
   }
 
   updateUI(game) {
+    const weapon = game.weaponManager.getCurrentWeapon();
     const weaponInfo = game.getWeaponInfo();
 
-    if (weaponInfo) {
-      this.uiElements.ammo.textContent = weaponInfo.currentAmmo;
+    if (weaponInfo && weapon) {
+      const ammoElement = this.uiElements.ammo;
+
+      // Check if the weapon is currently in its reloading state
+      if (weapon.isReloading) {
+        ammoElement.innerHTML = `RELOADING <span class="reloading-icon"></span>`;
+        ammoElement.classList.add("ammo-reloading");
+      } else {
+        ammoElement.textContent = weaponInfo.currentAmmo;
+        ammoElement.classList.remove("ammo-reloading");
+      }
+
       const maxAmmoElement = document.getElementById("maxAmmo");
       if (maxAmmoElement) {
         maxAmmoElement.textContent = weaponInfo.magazineCapacity;
       }
 
-      // Add weapon name display (update HTML to include this)
       const weaponNameElement = document.getElementById("weaponName");
       if (weaponNameElement) {
         weaponNameElement.textContent = weaponInfo.name;
       }
     }
 
-    this.uiElements.wave.textContent = game.wave;
+    // Update wave display
+    const waveElement = this.uiElements.wave;
+    if (game.waveManager.isWaitingForNextWave) {
+      waveElement.textContent = "PREPARING...";
+      waveElement.style.color = "#ffcc00";
+      waveElement.classList.add("wave-waiting");
+    } else {
+      waveElement.textContent = game.wave;
+      waveElement.style.color = "#fff";
+      waveElement.classList.remove("wave-waiting");
+    }
+
+    // Update remaining zombies
+    const zombiesLeftElement = document.getElementById("zombiesLeft");
+    if (zombiesLeftElement) {
+      zombiesLeftElement.textContent = game.zombieManager.zombies.length;
+    }
+
+    // Update other UI elements
     this.uiElements.kills.textContent = game.kills;
     this.uiElements.points.textContent = game.points;
     this.uiElements.health.textContent = Math.max(0, Math.floor(game.health));

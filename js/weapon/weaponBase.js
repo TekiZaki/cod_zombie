@@ -50,10 +50,13 @@ export class WeaponBase {
     this._burstsLeft = 0;
     this._isBursting = false;
     this._hasFiredInSemi = false;
+
+    // Reload Sound
+    this.reloadSound = new Audio("assets/handgun_reload.mp3");
   }
 
   canFire() {
-    if (this.isReloading || this.currentAmmo <= 0 || this._isBursting) {
+    if (this.isReloading || this.currentAmmo <= 0) {
       return false;
     }
     const now = Date.now();
@@ -62,6 +65,11 @@ export class WeaponBase {
   }
 
   startFiring(targetX, targetY) {
+    // Allow the firing state to start even with 0 ammo to trigger the auto-reload
+    if (this.currentAmmo <= 0) {
+      this.reload();
+    }
+
     this.isFiring = true;
     this._target.x = targetX;
     this._target.y = targetY;
@@ -82,8 +90,23 @@ export class WeaponBase {
   }
 
   _getFireData() {
-    this.currentAmmo--;
-    this.lastFireTime = Date.now();
+    // If we have no ammo left in the magazine
+    if (this.currentAmmo <= 0) {
+      this.reload(); // Automatically trigger the reload process
+      this.stopFiring(); // Stop the current firing sequence
+      return null;
+    }
+
+    this.currentAmmo--; // Deduct ammo
+    this.lastFireTime = Date.now(); // Record the fire time
+
+    // If the last bullet was just fired, trigger an automatic empty reload
+    if (this.currentAmmo <= 0) {
+      this.reload(); // Start the emptyReloadTime duration
+      this._isBursting = false;
+      this._burstsLeft = 0;
+    }
+
     return {
       damage: this.baseDamage,
       speed: this.bulletSpeed,
@@ -112,6 +135,11 @@ export class WeaponBase {
         break;
 
       case "burst":
+        if (this.isFiring && !this._isBursting) {
+          this._isBursting = true;
+          this._burstsLeft = this.burstCount;
+        }
+
         // Logic: If we are currently in the middle of a burst sequence
         if (this._isBursting && this._burstsLeft > 0) {
           if (this.canFire()) {
@@ -140,8 +168,13 @@ export class WeaponBase {
       return false;
 
     this.isReloading = true;
-    const reloadDuration =
-      this.currentAmmo === 0 ? this.emptyReloadTime : this.reloadTime;
+
+    // Determine which duration to use
+    const isEmpty = this.currentAmmo === 0;
+    const reloadDuration = isEmpty ? this.emptyReloadTime : this.reloadTime;
+
+    // Play Sound with adjusted speed
+    this.playReloadSound(reloadDuration);
 
     setTimeout(() => {
       const ammoNeeded = this.magazineCapacity - this.currentAmmo;
@@ -153,6 +186,25 @@ export class WeaponBase {
     }, reloadDuration * 1000);
 
     return true;
+  }
+
+  playReloadSound(targetDuration) {
+    if (!this.reloadSound) return;
+
+    // Reset sound if it was already playing
+    this.reloadSound.pause();
+    this.reloadSound.currentTime = 0;
+
+    // Calculate playback rate: (Original Duration / Target Duration)
+    // Note: This requires the metadata to be loaded to get duration accurately
+    if (this.reloadSound.duration) {
+      this.reloadSound.playbackRate =
+        this.reloadSound.duration / targetDuration;
+    }
+
+    this.reloadSound
+      .play()
+      .catch((e) => console.log("Audio play blocked until user interaction."));
   }
 
   getInfo() {

@@ -97,19 +97,21 @@ export class Game {
   gameLoop() {
     if (this.isGameOver) return;
 
-    // Update
     this.player.update(this.canvas.width, this.canvas.height);
 
     const fireDataArray = this.weaponManager.update();
     if (fireDataArray) {
       fireDataArray.forEach((fireData) => {
-        this.bulletManager.addBullet(
-          this.player.x + this.player.width / 2,
-          this.player.y + this.player.height / 2,
-          fireData.target.x,
-          fireData.target.y,
-          fireData,
-        );
+        // Add null check here
+        if (fireData) {
+          this.bulletManager.addBullet(
+            this.player.x + this.player.width / 2,
+            this.player.y + this.player.height / 2,
+            fireData.target.x,
+            fireData.target.y,
+            fireData,
+          );
+        }
       });
     }
 
