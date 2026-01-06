@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>2D Zombies Game</title>
+        <link rel="stylesheet" href="assets/style.css" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+    </head>
+    <body>
+        <div id="gameContainer">
+            <canvas id="gameCanvas"></canvas>
+            <div id="ui">
+                <div class="ui-item weapon-display">
+                    <span id="weaponName">VX-9 "Nightfall"</span>
+                </div>
+                <div class="ui-item">Wave: <span id="wave">1</span></div>
+                <div class="ui-item">Kills: <span id="kills">0</span></div>
+                <div class="ui-item">Points: <span id="points">0</span></div>
+                <div class="ui-item">
+                    Ammo: <span id="ammo">15</span>/<span id="maxAmmo">15</span>
+                </div>
+                <div class="ui-item">
+                    Health: <span id="health">100</span>/100
+                </div>
+            </div>
+
+            <div id="gameOver">
+                <h1>GAME OVER</h1>
+                <p>Wave: <span id="finalWave">1</span></p>
+                <p>Kills: <span id="finalKills">0</span></p>
+                <p>Points: <span id="finalPoints">0</span></p>
+                <button onclick="restartGame()">Restart</button>
+            </div>
+        </div>
+
+        <script type="module" src="main.js"></script>
+    </body>
+</html>

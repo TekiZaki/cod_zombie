@@ -1,0 +1,41 @@
+// cod_zombie/js/player.js
+
+import { PLAYER_WIDTH, PLAYER_HEIGHT, PLAYER_SPEED } from "./constants.js";
+
+export class Player {
+  constructor(canvasWidth, canvasHeight) {
+    this.x = canvasWidth / 2;
+    this.y = canvasHeight - 50;
+    this.width = PLAYER_WIDTH;
+    this.height = PLAYER_HEIGHT;
+    this.speed = PLAYER_SPEED;
+    this.moveLeft = false;
+    this.moveRight = false;
+    this.moveUp = false;
+    this.moveDown = false;
+
+    // Add this to the constructor in player.js
+    this.angle = 0;
+  }
+
+  // Add this method to update the angle based on mouse coordinates
+  updateRotation(mouseX, mouseY) {
+    const dx = mouseX - (this.x + this.width / 2);
+    const dy = mouseY - (this.y + this.height / 2);
+    this.angle = Math.atan2(dy, dx);
+  }
+
+  update(canvasWidth, canvasHeight) {
+    if (this.moveLeft && this.x > 0) this.x -= this.speed;
+    if (this.moveRight && this.x < canvasWidth - this.width)
+      this.x += this.speed;
+    if (this.moveUp && this.y > 0) this.y -= this.speed;
+    if (this.moveDown && this.y < canvasHeight - this.height)
+      this.y += this.speed;
+  }
+
+  resetPosition(canvasWidth, canvasHeight) {
+    this.x = canvasWidth / 2;
+    this.y = canvasHeight - 50;
+  }
+}
