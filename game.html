@@ -60,11 +60,16 @@
             </div>
 
             <div id="gameOver">
-                <h1>GAME OVER</h1>
-                <p>Wave: <span id="finalWave">1</span></p>
-                <p>Kills: <span id="finalKills">0</span></p>
-                <p>Points: <span id="finalPoints">0</span></p>
-                <button onclick="restartGame()">Restart</button>
+                <h1>MISSION FAILED</h1>
+                <div class="game-over-stats">
+                    <p>Wave Reached: <span id="finalWave">1</span></p>
+                    <p>Hostiles Neutralized: <span id="finalKills">0</span></p>
+                    <p>Combat Merits: <span id="finalPoints">0</span></p>
+                </div>
+                <div class="game-over-actions">
+                    <button class="menu-btn" onclick="restartGame()">Redeploy</button>
+                    <button class="menu-btn quit-btn" onclick="location.href='index.html'">Extract</button>
+                </div>
             </div>
 
             <div id="storeOverlay" class="store-overlay">

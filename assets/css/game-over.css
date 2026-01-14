@@ -33,23 +33,47 @@
 
 #gameOver span {
     color: #fff;
+    font-weight: bold;
 }
 
-#gameOver button {
+.game-over-stats {
+    margin-bottom: 20px;
+}
+
+.game-over-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
     margin-top: 30px;
-    padding: 15px 40px;
+}
+
+#gameOver .menu-btn {
+    padding: 12px 30px;
     background: transparent;
     border: 2px solid #ff4444;
     color: #ff4444;
-    font-family: "JetBrains Mono", monospace;
+    font-family: inherit;
     font-weight: bold;
     text-transform: uppercase;
     cursor: pointer;
     transition: all 0.2s;
+    font-size: 16px;
+    letter-spacing: 1px;
 }
 
-#gameOver button:hover {
+#gameOver .menu-btn:hover {
     background: #ff4444;
     color: #1a0a0a;
     box-shadow: 0 0 20px rgba(255, 68, 68, 0.4);
+}
+
+#gameOver .quit-btn {
+    border-color: #888;
+    color: #888;
+}
+
+#gameOver .quit-btn:hover {
+    background: #888;
+    color: #1a0a0a;
+    box-shadow: 0 0 20px rgba(136, 136, 136, 0.4);
 }
