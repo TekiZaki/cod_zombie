@@ -44,6 +44,11 @@ export class WeaponManager {
     return weapon ? weapon.reload() : false;
   }
 
+  switchFireMode() {
+    const weapon = this.getCurrentWeapon();
+    return weapon ? weapon.switchFireMode() : false;
+  }
+
   startFiring(targetX, targetY) {
     const weapon = this.getCurrentWeapon();
     if (weapon) {

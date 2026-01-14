@@ -4,6 +4,9 @@ export class WaveManager {
   constructor() {
     this.isWaitingForNextWave = false;
     this.waveDelay = 3000; // 3 second pause between rounds
+
+    // Initialize the wave sound
+    this.waveSound = new Audio("assets/zombie_wave.mp3");
   }
 
   checkWaveComplete(zombies, game, zombieManager) {
@@ -14,6 +17,17 @@ export class WaveManager {
       // Logic for ending current wave
       setTimeout(() => {
         game.wave += 1;
+
+        // Play the wave sound when the new wave officially starts
+        this.playWaveSound();
+
+        // Regenerate Map
+        game.mapManager.generateMap(
+          game.canvas.width,
+          game.canvas.height,
+          game.player.x,
+          game.player.y,
+        );
 
         // Optional: Refill ammo on new round like COD (or keep as is)
         const weapon = game.weaponManager.getCurrentWeapon();
@@ -30,5 +44,15 @@ export class WaveManager {
         this.isWaitingForNextWave = false;
       }, this.waveDelay);
     }
+  }
+
+  playWaveSound() {
+    if (!this.waveSound) return;
+
+    // Reset and play
+    this.waveSound.currentTime = 0;
+    this.waveSound.play().catch((e) => {
+      console.log("Wave sound blocked until user interaction.");
+    });
   }
 }

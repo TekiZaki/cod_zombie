@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>2D Zombies Game</title>
         <link rel="stylesheet" href="assets/style.css" />
+        <link rel="icon" href="assets/icon.png" />
         <link
             href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
             rel="stylesheet"
@@ -14,20 +15,47 @@
         <div id="gameContainer">
             <canvas id="gameCanvas"></canvas>
             <div id="ui">
-                <div class="ui-item weapon-display">
-                    <span id="weaponName">VX-9 "Nightfall"</span>
+                <!-- Top Left: Stats -->
+                <div id="statsTopLeft" class="ui-panel top-left">
+                    <div class="ui-item">Zombies: <span id="zombiesLeft">0</span></div>
+                    <div class="ui-item">Kills: <span id="kills">0</span></div>
+                    <div class="ui-item">Points: <span id="points">0</span></div>
                 </div>
-                <div class="ui-item">Wave: <span id="wave">1</span></div>
-                <div class="ui-item">
-                    Zombies: <span id="zombiesLeft">0</span>
+
+                <!-- Top Center: Wave -->
+                <div id="waveCenter" class="ui-panel top-center">
+                    <div class="wave-label">WAVE</div>
+                    <div id="wave">1</div>
                 </div>
-                <div class="ui-item">Kills: <span id="kills">0</span></div>
-                <div class="ui-item">Points: <span id="points">0</span></div>
-                <div class="ui-item">
-                    Ammo: <span id="ammo">15</span>/<span id="maxAmmo">15</span>
+
+                <!-- Bottom Left: Health -->
+                <div id="healthBottomLeft" class="ui-panel bottom-left">
+                    <div class="ui-item health-display">
+                        HEALTH: <span id="health">100</span>
+                    </div>
+                    <div class="health-bar-container">
+                        <div id="healthBarFill" class="health-bar-fill"></div>
+                    </div>
                 </div>
-                <div class="ui-item">
-                    Health: <span id="health">100</span>/100
+
+                <!-- Bottom Center: Hints -->
+                <div id="controlsHint" class="ui-hints bottom-center">
+                    <div class="hint-item"><span class="key">WASD</span> MOVE</div>
+                    <div class="hint-item"><span class="key">LMB</span> FIRE</div>
+                    <div class="hint-item"><span class="key">R</span> RELOAD</div>
+                    <div class="hint-item"><span class="key">Q</span> SWITCH</div>
+                    <div class="hint-item"><span class="key">B</span> MODE</div>
+                </div>
+
+                <!-- Bottom Right: Weapon & Ammo -->
+                <div id="weaponBottomRight" class="ui-panel bottom-right">
+                    <div class="weapon-info">
+                        <span id="weaponName">VX-9 "Nightfall"</span>
+                        <span id="fireMode">[SEMI]</span>
+                    </div>
+                    <div class="ammo-display">
+                        AMMO: <span id="ammo">15</span> / <span id="maxAmmo">15</span>
+                    </div>
                 </div>
             </div>
 

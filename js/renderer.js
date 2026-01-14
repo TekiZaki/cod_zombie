@@ -64,7 +64,7 @@ export class Renderer {
     }
   }
 
-  drawZombies(zombies) {
+  drawZombies(zombies, nearestZombie = null) {
     for (let zombie of zombies) {
       this.ctx.fillStyle = COLORS.zombie;
       this.ctx.fillRect(zombie.x, zombie.y, zombie.width, zombie.height);
@@ -73,6 +73,79 @@ export class Renderer {
       this.ctx.fillStyle = COLORS.zombieEye;
       this.ctx.fillRect(zombie.x + 5, zombie.y + 10, 5, 5);
       this.ctx.fillRect(zombie.x + 15, zombie.y + 10, 5, 5);
+
+      // Zombie Health Bar
+      this.drawZombieHealthBar(zombie);
+
+      // Draw arrow if this is the nearest zombie
+      if (zombie === nearestZombie) {
+        this.drawTargetArrow(zombie);
+      }
+    }
+  }
+
+  drawZombieHealthBar(zombie) {
+    const barWidth = zombie.width;
+    const barHeight = 4;
+    const x = zombie.x;
+    const y = zombie.y - 8;
+
+    // Background (gray)
+    this.ctx.fillStyle = "rgba(50, 50, 50, 0.5)";
+    this.ctx.fillRect(x, y, barWidth, barHeight);
+
+    // Health Fill (red)
+    const healthPercent = Math.max(0, zombie.health / zombie.maxHealth);
+    this.ctx.fillStyle = "#ff4444";
+    this.ctx.fillRect(x, y, barWidth * healthPercent, barHeight);
+
+    // Border
+    this.ctx.strokeStyle = "rgba(0, 0, 0, 0.8)";
+    this.ctx.lineWidth = 1;
+    this.ctx.strokeRect(x, y, barWidth, barHeight);
+  }
+
+  drawTargetArrow(zombie) {
+
+    const arrowSize = 10;
+    const bounceOffset = Math.sin(Date.now() / 100) * 5;
+    const x = zombie.x + zombie.width / 2;
+    const y = zombie.y - 15 + bounceOffset;
+
+    this.ctx.save();
+    this.ctx.fillStyle = "#ffcc00"; // Gold/Yellow arrow
+    this.ctx.beginPath();
+    this.ctx.moveTo(x - arrowSize, y - arrowSize);
+    this.ctx.lineTo(x + arrowSize, y - arrowSize);
+    this.ctx.lineTo(x, y);
+    this.ctx.closePath();
+    this.ctx.fill();
+    
+    // Add a small stroke for better visibility
+    this.ctx.strokeStyle = "#000";
+    this.ctx.lineWidth = 1;
+    this.ctx.stroke();
+    this.ctx.restore();
+  }
+
+  drawObstacles(obstacles) {
+    this.ctx.fillStyle = COLORS.obstacle;
+    for (let obstacle of obstacles) {
+      this.ctx.fillRect(
+        obstacle.x,
+        obstacle.y,
+        obstacle.width,
+        obstacle.height
+      );
+      // Optional: Add a border to obstacles
+      this.ctx.strokeStyle = "#475569";
+      this.ctx.lineWidth = 2;
+      this.ctx.strokeRect(
+        obstacle.x,
+        obstacle.y,
+        obstacle.width,
+        obstacle.height
+      );
     }
   }
 }

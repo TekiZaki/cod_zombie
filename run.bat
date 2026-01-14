@@ -43,7 +43,7 @@ echo.
 
 :: Menjalankan server Python 3
 :: -m http.server adalah modul server HTTP sederhana bawaan Python 3
-python -m http.server 8000
+http-server 8000
 
 echo.
 echo Server stopped.

@@ -25,6 +25,12 @@ export class Player {
     this.angle = Math.atan2(dy, dx);
   }
 
+  updateRotationToTarget(targetX, targetY) {
+    const dx = targetX - (this.x + this.width / 2);
+    const dy = targetY - (this.y + this.height / 2);
+    this.angle = Math.atan2(dy, dx);
+  }
+
   update(canvasWidth, canvasHeight) {
     if (this.moveLeft && this.x > 0) this.x -= this.speed;
     if (this.moveRight && this.x < canvasWidth - this.width)

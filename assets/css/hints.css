@@ -1,0 +1,33 @@
+/* assets/css/hints.css */
+
+.bottom-center {
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.ui-hints {
+    position: absolute;
+    display: flex;
+    gap: 20px;
+    pointer-events: none;
+}
+
+.hint-item {
+    font-size: 11px;
+    color: rgba(139, 163, 93, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.key {
+    background: rgba(139, 163, 93, 0.2);
+    border: 1px solid rgba(139, 163, 93, 0.4);
+    color: #fff;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-weight: bold;
+}

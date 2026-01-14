@@ -3,6 +3,7 @@
 // weapon
 import { WeaponManager } from "./weapon/weaponManager.js";
 import { HandgunVX9Nightfall } from "./weapon/handgun_vx-9_nightfall.js";
+import { AssaultRifleARC7Vanguard } from "./weapon/assault_rifle_arc-7_vanguard.js";
 
 import { Player } from "./player.js";
 import { BulletManager } from "./bulletManager.js";
@@ -12,6 +13,7 @@ import { WaveManager } from "./waveManager.js";
 import { Renderer } from "./renderer.js";
 import { UIManager } from "./uiManager.js";
 import { InputHandler } from "./inputHandler.js";
+import { MapManager } from "./mapManager.js";
 import {
   GAME_CANVAS_ID,
   GAME_CONTAINER_ID,
@@ -38,10 +40,12 @@ export class Game {
     this.waveManager = new WaveManager();
     this.renderer = new Renderer(this.ctx);
     this.uiManager = new UIManager();
+    this.mapManager = new MapManager();
 
     // Weapon Manager
     this.weaponManager = new WeaponManager();
     this.weaponManager.addWeapon(new HandgunVX9Nightfall());
+    this.weaponManager.addWeapon(new AssaultRifleARC7Vanguard());
 
     this.inputHandler = new InputHandler(this.player, this, this.weaponManager);
 
@@ -81,6 +85,12 @@ export class Game {
 
   initGame() {
     this.player.resetPosition(this.canvas.width, this.canvas.height);
+    this.mapManager.generateMap(
+      this.canvas.width,
+      this.canvas.height,
+      this.player.x,
+      this.player.y,
+    );
     this.zombieManager.spawnZombies(
       this.canvas.width,
       this.canvas.height,
@@ -96,6 +106,36 @@ export class Game {
 
   gameLoop() {
     if (this.isGameOver) return;
+
+    // Find nearest zombie for auto-aim
+    let nearestZombie = null;
+    let minDistance = Infinity;
+    const playerCenterX = this.player.x + this.player.width / 2;
+    const playerCenterY = this.player.y + this.player.height / 2;
+
+    for (let zombie of this.zombieManager.zombies) {
+      const zombieCenterX = zombie.x + zombie.width / 2;
+      const zombieCenterY = zombie.y + zombie.height / 2;
+      const dist = Math.sqrt(
+        Math.pow(zombieCenterX - playerCenterX, 2) +
+          Math.pow(zombieCenterY - playerCenterY, 2)
+      );
+      if (dist < minDistance) {
+        minDistance = dist;
+        nearestZombie = zombie;
+      }
+    }
+
+    if (nearestZombie) {
+      const targetX = nearestZombie.x + nearestZombie.width / 2;
+      const targetY = nearestZombie.y + nearestZombie.height / 2;
+      this.player.updateRotationToTarget(targetX, targetY);
+      
+      // Update weapon target for auto-aim
+      if (this.weaponManager.getCurrentWeapon()) {
+        this.weaponManager.getCurrentWeapon()._target = { x: targetX, y: targetY };
+      }
+    }
 
     this.player.update(this.canvas.width, this.canvas.height);
 
@@ -117,6 +157,23 @@ export class Game {
 
     this.bulletManager.update(this.canvas.width, this.canvas.height);
     this.zombieManager.update(this.player.x, this.player.y);
+
+    // Obstacle collisions
+    this.collisionDetector.resolveObstacleCollisions(
+      this.player,
+      this.mapManager.obstacles,
+    );
+    this.zombieManager.zombies.forEach((zombie) => {
+      this.collisionDetector.resolveObstacleCollisions(
+        zombie,
+        this.mapManager.obstacles,
+      );
+    });
+    this.collisionDetector.checkBulletObstacleCollisions(
+      this.bulletManager.bullets,
+      this.mapManager.obstacles,
+    );
+
     this.collisionDetector.checkCollisions(
       this.bulletManager.bullets,
       this.zombieManager.zombies,
@@ -131,9 +188,10 @@ export class Game {
 
     // Draw
     this.renderer.clearCanvas(this.canvas.width, this.canvas.height);
+    this.renderer.drawObstacles(this.mapManager.obstacles);
     this.renderer.drawPlayer(this.player);
     this.renderer.drawBullets(this.bulletManager.bullets, this.bulletImage);
-    this.renderer.drawZombies(this.zombieManager.zombies);
+    this.renderer.drawZombies(this.zombieManager.zombies, nearestZombie);
 
     // Update UI
     this.uiManager.updateUI(this);

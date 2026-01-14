@@ -838,8 +838,8 @@ export class UIManager {
   }
 
   updateUI(game) {
-    const weapon = game.weaponManager.getCurrentWeapon(); //
-    const weaponInfo = game.getWeaponInfo(); //
+    const weapon = game.weaponManager.getCurrentWeapon();
+    const weaponInfo = game.getWeaponInfo();
 
     if (weaponInfo && weapon) {
       const ammoElement = this.uiElements.ammo;
@@ -864,10 +864,11 @@ export class UIManager {
       }
     }
 
+    // Update wave display
     const waveElement = this.uiElements.wave;
     if (game.waveManager.isWaitingForNextWave) {
       waveElement.textContent = "PREPARING...";
-      waveElement.style.color = "#ffcc00"; // Turn yellow during pause
+      waveElement.style.color = "#ffcc00";
       waveElement.classList.add("wave-waiting");
     } else {
       waveElement.textContent = game.wave;
@@ -881,10 +882,10 @@ export class UIManager {
       zombiesLeftElement.textContent = game.zombieManager.zombies.length;
     }
 
-    this.uiElements.wave.textContent = game.wave; //
-    this.uiElements.kills.textContent = game.kills; //
-    this.uiElements.points.textContent = game.points; //
-    this.uiElements.health.textContent = Math.max(0, Math.floor(game.health)); //
+    // Update other UI elements
+    this.uiElements.kills.textContent = game.kills;
+    this.uiElements.points.textContent = game.points;
+    this.uiElements.health.textContent = Math.max(0, Math.floor(game.health));
   }
 
   showGameOver(game) {

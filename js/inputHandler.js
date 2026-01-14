@@ -40,6 +40,11 @@ export class InputHandler {
     if (e.key === "q" || e.key === "Q") {
       this.game.weaponManager.switchWeapon();
     }
+
+    // fire mode switching
+    if (e.key === "b" || e.key === "B") {
+      this.game.weaponManager.switchFireMode();
+    }
   }
 
   handleKeyUp(e) {

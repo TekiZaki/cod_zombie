@@ -16,6 +16,12 @@ export class UIManager {
 
     if (weaponInfo && weapon) {
       const ammoElement = this.uiElements.ammo;
+      const weaponNameElement = document.getElementById("weaponName");
+      const fireModeElement = document.getElementById("fireMode");
+
+      if (weaponNameElement) {
+        weaponNameElement.textContent = weaponInfo.name;
+      }
 
       // Check if the weapon is currently in its reloading state
       if (weapon.isReloading) {
@@ -31,9 +37,8 @@ export class UIManager {
         maxAmmoElement.textContent = weaponInfo.magazineCapacity;
       }
 
-      const weaponNameElement = document.getElementById("weaponName");
-      if (weaponNameElement) {
-        weaponNameElement.textContent = weaponInfo.name;
+      if (fireModeElement) {
+        fireModeElement.textContent = `[${weaponInfo.fireMode.toUpperCase()}]`;
       }
     }
 
@@ -58,7 +63,15 @@ export class UIManager {
     // Update other UI elements
     this.uiElements.kills.textContent = game.kills;
     this.uiElements.points.textContent = game.points;
-    this.uiElements.health.textContent = Math.max(0, Math.floor(game.health));
+    const currentHealth = Math.max(0, Math.floor(game.health));
+    this.uiElements.health.textContent = currentHealth;
+
+    // Update health bar fill
+    const healthBarFill = document.getElementById("healthBarFill");
+    if (healthBarFill) {
+      const healthPercentage = (currentHealth / 100) * 100; // Assuming 100 is max health
+      healthBarFill.style.width = `${healthPercentage}%`;
+    }
   }
 
   showGameOver(game) {

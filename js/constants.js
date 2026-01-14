@@ -22,7 +22,7 @@ export const ZOMBIE_COUNT_PER_WAVE = 2;
 
 export const POINTS_PER_HIT = 10;
 export const POINTS_PER_KILL = 100;
-export const HEALTH_LOSS_PER_ZOMBIE_COLLISION = 1;
+export const HEALTH_LOSS_PER_ZOMBIE_COLLISION = 0.25;
 
 export const UI_ELEMENT_IDS = {
   wave: "wave",
@@ -44,4 +44,5 @@ export const COLORS = {
   zombie: "#94a3b8", // Grayish zombie
   zombieEye: "#ef4444", // Red eyes
   canvasBackground: "#0f172a", // Dark blue background
+  obstacle: "#334155", // Slate obstacle
 };

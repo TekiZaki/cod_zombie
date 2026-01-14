@@ -49,4 +49,56 @@ export class CollisionDetector {
       }
     }
   }
+
+  resolveObstacleCollisions(entity, obstacles) {
+    for (let obstacle of obstacles) {
+      if (
+        entity.x < obstacle.x + obstacle.width &&
+        entity.x + entity.width > obstacle.x &&
+        entity.y < obstacle.y + obstacle.height &&
+        entity.y + entity.height > obstacle.y
+      ) {
+        // Find the overlap on each side
+        const overlapLeft = entity.x + entity.width - obstacle.x;
+        const overlapRight = obstacle.x + obstacle.width - entity.x;
+        const overlapTop = entity.y + entity.height - obstacle.y;
+        const overlapBottom = obstacle.y + obstacle.height - entity.y;
+
+        // Find the smallest overlap
+        const minOverlap = Math.min(
+          overlapLeft,
+          overlapRight,
+          overlapTop,
+          overlapBottom
+        );
+
+        if (minOverlap === overlapLeft) {
+          entity.x -= overlapLeft;
+        } else if (minOverlap === overlapRight) {
+          entity.x += overlapRight;
+        } else if (minOverlap === overlapTop) {
+          entity.y -= overlapTop;
+        } else if (minOverlap === overlapBottom) {
+          entity.y += overlapBottom;
+        }
+      }
+    }
+  }
+
+  checkBulletObstacleCollisions(bullets, obstacles) {
+    for (let i = bullets.length - 1; i >= 0; i--) {
+      const bullet = bullets[i];
+      for (let obstacle of obstacles) {
+        if (
+          bullet.x > obstacle.x &&
+          bullet.x < obstacle.x + obstacle.width &&
+          bullet.y > obstacle.y &&
+          bullet.y < obstacle.y + obstacle.height
+        ) {
+          bullets.splice(i, 1);
+          break;
+        }
+      }
+    }
+  }
 }

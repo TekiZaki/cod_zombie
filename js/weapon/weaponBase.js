@@ -37,6 +37,7 @@ export class WeaponBase {
 
     // Fire Mode
     this.fireMode = config.fireMode || "semi"; // 'semi', 'auto', 'burst'
+    this.availableFireModes = config.availableFireModes || [this.fireMode];
     this.burstCount = config.burstCount || 3;
 
     // Internal State
@@ -188,6 +189,19 @@ export class WeaponBase {
     return true;
   }
 
+  switchFireMode() {
+    if (this.availableFireModes.length <= 1) return false;
+
+    const currentIndex = this.availableFireModes.indexOf(this.fireMode);
+    const nextIndex = (currentIndex + 1) % this.availableFireModes.length;
+    this.fireMode = this.availableFireModes[nextIndex];
+    
+    // Reset firing state when switching modes
+    this.stopFiring();
+    
+    return true;
+  }
+
   playReloadSound(targetDuration) {
     if (!this.reloadSound) return;
 
@@ -214,6 +228,7 @@ export class WeaponBase {
       currentAmmo: this.currentAmmo,
       reserveAmmo: this.reserveAmmo,
       magazineCapacity: this.magazineCapacity,
+      fireMode: this.fireMode,
     };
   }
 }

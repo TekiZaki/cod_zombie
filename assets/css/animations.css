@@ -1,0 +1,44 @@
+/* assets/css/animations.css */
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.reloading-icon {
+    display: inline-block;
+    margin-left: 10px;
+    width: 12px;
+    height: 12px;
+    border: 2px solid rgba(255, 204, 0, 0.3);
+    border-top: 2px solid #ffcc00;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    vertical-align: middle;
+}
+
+.ammo-reloading {
+    color: #ff4444 !important;
+    font-style: italic;
+}
+
+.wave-waiting {
+    animation: pulse-red 1s infinite;
+    color: #ff4444 !important;
+}
+
+@keyframes pulse-red {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 1;
+    }
+}

@@ -34,7 +34,8 @@ export class HandgunVX9Nightfall extends WeaponBase {
       movementPenalty: -0.05,
       drawTime: 0.35, // seconds
 
-      fireMode: "burst", // semi, burst, auto
+      fireMode: "semi", // semi, burst, auto
+      availableFireModes: ["semi", "burst"],
       burstCount: 3, // comment this if not burst
 
       // Special Effects
