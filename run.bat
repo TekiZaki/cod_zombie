@@ -27,7 +27,7 @@ setlocal enabledelayedexpansion
 set count=0
 for %%f in (*.html) do (
     set /a count+=1
-    echo   http://localhost:8000/%%f
+    echo   http://localhost:8080/%%f
 )
 
 if !count! equ 0 (
@@ -43,7 +43,7 @@ echo.
 
 :: Menjalankan server Python 3
 :: -m http.server adalah modul server HTTP sederhana bawaan Python 3
-http-server 8000
+http-server
 
 echo.
 echo Server stopped.
