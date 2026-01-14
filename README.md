@@ -4,10 +4,13 @@ A fast-paced, wave-based zombie survival game built with vanilla JavaScript and 
 
 ## 🚀 Features
 
+- **Tactical Store & Upgrades**: Every 5 waves, access the tactical store to purchase persistent upgrades for your player, weapons, and utility modifiers.
+- **Weapon Progression**: Start with a sidearm and earn points to unlock high-tier weapons like the ARC-7 "Vanguard".
 - **Dynamic Environments**: The map is randomly generated with obstacles every wave, forcing you to adapt your tactics.
+- **High-Octane Combat**: Fast-paced movement, quick weapon handling, and intense zombie scaling.
 - **Advanced Weapon System**:
-    - **ARC-7 "Vanguard"**: An Epic assault rifle with full-auto fire and accuracy that improves during sustained fire.
-    - **VX-9 "Nightfall"**: A versatile sidearm with selectable Semi-Auto and 3-Round Burst fire modes.
+    - **ARC-7 "Vanguard"**: An Epic assault rifle with full-auto fire and accuracy that improves during sustained fire. (Unlockable)
+    - **VX-9 "Nightfall"**: A versatile sidearm with selectable Semi-Auto and 3-Round Burst fire modes. (Starting Weapon)
 - **Auto-Aim Intelligence**: Tactical assistance system that automatically targets the nearest threat, marked with a visual indicator.
 - **Tactical HUD**: A modern, spread-out interface providing real-time data on health, ammo, wave progress, and kill counts.
 - **Progression**: Zombies grow stronger with every wave, increasing in both health and speed.
