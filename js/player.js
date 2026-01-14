@@ -1,6 +1,11 @@
 // cod_zombie/js/player.js
 
-import { PLAYER_WIDTH, PLAYER_HEIGHT, PLAYER_SPEED } from "./constants.js";
+import {
+  PLAYER_WIDTH,
+  PLAYER_HEIGHT,
+  PLAYER_SPEED,
+  PLAYER_INITIAL_HEALTH,
+} from "./constants.js";
 
 export class Player {
   constructor(canvasWidth, canvasHeight) {
@@ -9,6 +14,8 @@ export class Player {
     this.width = PLAYER_WIDTH;
     this.height = PLAYER_HEIGHT;
     this.speed = PLAYER_SPEED;
+    this.maxHealth = PLAYER_INITIAL_HEALTH;
+    this.damageReduction = 1.0;
     this.moveLeft = false;
     this.moveRight = false;
     this.moveUp = false;

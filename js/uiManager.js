@@ -69,7 +69,7 @@ export class UIManager {
     // Update health bar fill
     const healthBarFill = document.getElementById("healthBarFill");
     if (healthBarFill) {
-      const healthPercentage = (currentHealth / 100) * 100; // Assuming 100 is max health
+      const healthPercentage = (currentHealth / game.player.maxHealth) * 100;
       healthBarFill.style.width = `${healthPercentage}%`;
     }
   }

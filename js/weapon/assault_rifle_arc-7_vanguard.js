@@ -15,8 +15,8 @@ export class AssaultRifleARC7Vanguard extends WeaponBase {
       // Core Stats
       baseDamage: 32,
       headshotMultiplier: 1.5,
-      fireRate: 600, // rounds per minute
-      bulletSpeed: 600,
+      fireRate: 750, // rounds per minute
+      bulletSpeed: 1500,
       effectiveRange: 600,
       maxRange: 900,
       armorPenetration: "High",
@@ -24,8 +24,8 @@ export class AssaultRifleARC7Vanguard extends WeaponBase {
       // Ammo & Reload
       magazineCapacity: 30,
       maxAmmo: 210,
-      reloadTime: 2.2,
-      emptyReloadTime: 2.8,
+      reloadTime: 1.8,
+      emptyReloadTime: 2.4,
 
       // Handling & Accuracy
       recoil: "Medium",

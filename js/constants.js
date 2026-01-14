@@ -5,23 +5,23 @@ export const GAME_CONTAINER_ID = "gameContainer";
 
 export const PLAYER_WIDTH = 30;
 export const PLAYER_HEIGHT = 40;
-export const PLAYER_SPEED = 4;
+export const PLAYER_SPEED = 6;
 export const PLAYER_INITIAL_HEALTH = 100;
 export const PLAYER_MAX_AMMO = 30;
 
-export const BULLET_SPEED = 20;
+export const BULLET_SPEED = 25;
 export const BULLET_WIDTH = 4;
 export const BULLET_HEIGHT = 10;
 
 export const ZOMBIE_WIDTH = 25;
 export const ZOMBIE_HEIGHT = 35;
-export const ZOMBIE_INITIAL_SPEED_MULTIPLIER = 0.1;
-export const ZOMBIE_INITIAL_HEALTH_MULTIPLIER = 15; // Increased from 0.5 to 15
-export const ZOMBIE_BASE_COUNT = 3;
-export const ZOMBIE_COUNT_PER_WAVE = 2;
+export const ZOMBIE_INITIAL_SPEED_MULTIPLIER = 0.4;
+export const ZOMBIE_INITIAL_HEALTH_MULTIPLIER = 8; // Reduced from 15 to 8
+export const ZOMBIE_BASE_COUNT = 6;
+export const ZOMBIE_COUNT_PER_WAVE = 4;
 
-export const POINTS_PER_HIT = 10;
-export const POINTS_PER_KILL = 100;
+export const POINTS_PER_HIT = 2;
+export const POINTS_PER_KILL = 20;
 export const HEALTH_LOSS_PER_ZOMBIE_COLLISION = 0.25;
 
 export const UI_ELEMENT_IDS = {

@@ -13,7 +13,7 @@ export class Zombie {
     this.y = y;
     this.width = ZOMBIE_WIDTH;
     this.height = ZOMBIE_HEIGHT;
-    this.speed = 1 + wave * ZOMBIE_INITIAL_SPEED_MULTIPLIER;
+    this.speed = 2 + wave * ZOMBIE_INITIAL_SPEED_MULTIPLIER;
     this.maxHealth = 1 + wave * ZOMBIE_INITIAL_HEALTH_MULTIPLIER;
     this.health = this.maxHealth;
   }

@@ -66,6 +66,26 @@
                 <p>Points: <span id="finalPoints">0</span></p>
                 <button onclick="restartGame()">Restart</button>
             </div>
+
+            <div id="storeOverlay" class="store-overlay">
+                <div class="store-header">
+                    <h2>TACTICAL UPGRADES</h2>
+                    <p>Current Points: <span id="storePointsDisplay" style="color: #fff; font-weight: bold;">0</span></p>
+                    <p style="font-size: 0.8em; margin-top: 5px;">Each upgrade costs <span id="upgradeCostDisplay" style="color: #ffcc00;">500</span> pts</p>
+                </div>
+                <div id="upgradeContainer" class="upgrade-container">
+                    <!-- Cards will be injected here -->
+                </div>
+                <div class="store-footer">
+                    <button id="refreshBtn" class="refresh-button">
+                        REFRESH CHOICES
+                        <div id="refreshCost" class="refresh-cost">Cost: 300 pts</div>
+                    </button>
+                    <button id="continueBtn" class="continue-button">
+                        CONTINUE GAME
+                    </button>
+                </div>
+            </div>
         </div>
 
         <script type="module" src="main.js"></script>

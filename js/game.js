@@ -14,6 +14,7 @@ import { Renderer } from "./renderer.js";
 import { UIManager } from "./uiManager.js";
 import { InputHandler } from "./inputHandler.js";
 import { MapManager } from "./mapManager.js";
+import { StoreManager } from "./storeManager.js";
 import {
   GAME_CANVAS_ID,
   GAME_CONTAINER_ID,
@@ -28,6 +29,12 @@ export class Game {
     this.points = 0;
     this.health = PLAYER_INITIAL_HEALTH;
     this.isGameOver = false;
+    this.isPaused = false;
+    this.modifiers = {
+        healOnKill: 0,
+        ammoBonus: 0,
+        critChance: 0
+    };
 
     this.canvas = document.getElementById(GAME_CANVAS_ID);
     this.ctx = this.canvas.getContext("2d");
@@ -41,11 +48,16 @@ export class Game {
     this.renderer = new Renderer(this.ctx);
     this.uiManager = new UIManager();
     this.mapManager = new MapManager();
+    this.storeManager = new StoreManager(this);
 
-    // Weapon Manager
+    document.getElementById("refreshBtn").addEventListener("click", () => {
+        this.storeManager.refresh();
+    });
+
+    // Weapon Manager - Start with only Handgun
     this.weaponManager = new WeaponManager();
     this.weaponManager.addWeapon(new HandgunVX9Nightfall());
-    this.weaponManager.addWeapon(new AssaultRifleARC7Vanguard());
+    // ARC-7 Vanguard removed from default loadout - now must be purchased in store
 
     this.inputHandler = new InputHandler(this.player, this, this.weaponManager);
 
@@ -96,6 +108,11 @@ export class Game {
       this.canvas.height,
       this.wave,
     );
+    
+    // Ensure only one loop is running
+    if (this.animationFrameId) {
+        cancelAnimationFrame(this.animationFrameId);
+    }
     this.gameLoop();
   }
 
@@ -105,7 +122,10 @@ export class Game {
   }
 
   gameLoop() {
-    if (this.isGameOver) return;
+    if (this.isGameOver || this.isPaused) return;
+
+    // Use a local variable for the animation frame ID
+    this.animationFrameId = requestAnimationFrame(this.gameLoop.bind(this));
 
     // Find nearest zombie for auto-aim
     let nearestZombie = null;
@@ -195,8 +215,6 @@ export class Game {
 
     // Update UI
     this.uiManager.updateUI(this);
-
-    requestAnimationFrame(this.gameLoop.bind(this));
   }
 
   endGame() {
@@ -211,6 +229,12 @@ export class Game {
     this.health = PLAYER_INITIAL_HEALTH;
     this.ammo = PLAYER_MAX_AMMO;
     this.isGameOver = false;
+    this.isPaused = false;
+    this.modifiers = {
+        healOnKill: 0,
+        ammoBonus: 0,
+        critChance: 0
+    };
 
     this.bulletManager.clear();
     this.zombieManager.clear();

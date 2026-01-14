@@ -15,8 +15,8 @@ export class HandgunVX9Nightfall extends WeaponBase {
       // Core Stats
       baseDamage: 28,
       headshotMultiplier: 1.8,
-      fireRate: 420, // rounds per minute
-      bulletSpeed: 520, // pixels per second (scaled from m/s)
+      fireRate: 500, // rounds per minute
+      bulletSpeed: 1200, // pixels per second (scaled from m/s)
       effectiveRange: 450, // pixels (scaled from 45 meters)
       maxRange: 700, // pixels (scaled from 70 meters)
       armorPenetration: "Medium",
@@ -24,8 +24,8 @@ export class HandgunVX9Nightfall extends WeaponBase {
       // Ammo & Reload
       magazineCapacity: 15,
       maxAmmo: 120,
-      reloadTime: 1.6, // seconds
-      emptyReloadTime: 2.1, // seconds
+      reloadTime: 1.2, // seconds
+      emptyReloadTime: 1.6, // seconds
 
       // Handling & Accuracy
       recoil: "Low",

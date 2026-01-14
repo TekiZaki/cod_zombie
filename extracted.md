@@ -10,6 +10,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>2D Zombies Game</title>
         <link rel="stylesheet" href="assets/style.css" />
+        <link rel="icon" href="assets/icon.png" />
         <link
             href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
             rel="stylesheet"
@@ -19,20 +20,47 @@
         <div id="gameContainer">
             <canvas id="gameCanvas"></canvas>
             <div id="ui">
-                <div class="ui-item weapon-display">
-                    <span id="weaponName">VX-9 "Nightfall"</span>
+                <!-- Top Left: Stats -->
+                <div id="statsTopLeft" class="ui-panel top-left">
+                    <div class="ui-item">Zombies: <span id="zombiesLeft">0</span></div>
+                    <div class="ui-item">Kills: <span id="kills">0</span></div>
+                    <div class="ui-item">Points: <span id="points">0</span></div>
                 </div>
-                <div class="ui-item">Wave: <span id="wave">1</span></div>
-                <div class="ui-item">
-                    Zombies: <span id="zombiesLeft">0</span>
+
+                <!-- Top Center: Wave -->
+                <div id="waveCenter" class="ui-panel top-center">
+                    <div class="wave-label">WAVE</div>
+                    <div id="wave">1</div>
                 </div>
-                <div class="ui-item">Kills: <span id="kills">0</span></div>
-                <div class="ui-item">Points: <span id="points">0</span></div>
-                <div class="ui-item">
-                    Ammo: <span id="ammo">15</span>/<span id="maxAmmo">15</span>
+
+                <!-- Bottom Left: Health -->
+                <div id="healthBottomLeft" class="ui-panel bottom-left">
+                    <div class="ui-item health-display">
+                        HEALTH: <span id="health">100</span>
+                    </div>
+                    <div class="health-bar-container">
+                        <div id="healthBarFill" class="health-bar-fill"></div>
+                    </div>
                 </div>
-                <div class="ui-item">
-                    Health: <span id="health">100</span>/100
+
+                <!-- Bottom Center: Hints -->
+                <div id="controlsHint" class="ui-hints bottom-center">
+                    <div class="hint-item"><span class="key">WASD</span> MOVE</div>
+                    <div class="hint-item"><span class="key">LMB</span> FIRE</div>
+                    <div class="hint-item"><span class="key">R</span> RELOAD</div>
+                    <div class="hint-item"><span class="key">Q</span> SWITCH</div>
+                    <div class="hint-item"><span class="key">B</span> MODE</div>
+                </div>
+
+                <!-- Bottom Right: Weapon & Ammo -->
+                <div id="weaponBottomRight" class="ui-panel bottom-right">
+                    <div class="weapon-info">
+                        <span id="weaponName">VX-9 "Nightfall"</span>
+                        <span id="fireMode">[SEMI]</span>
+                    </div>
+                    <div class="ammo-display">
+                        AMMO: <span id="ammo">15</span> / <span id="maxAmmo">15</span>
+                    </div>
                 </div>
             </div>
 
@@ -42,6 +70,23 @@
                 <p>Kills: <span id="finalKills">0</span></p>
                 <p>Points: <span id="finalPoints">0</span></p>
                 <button onclick="restartGame()">Restart</button>
+            </div>
+
+            <div id="storeOverlay" class="store-overlay">
+                <div class="store-header">
+                    <h2>TACTICAL UPGRADES</h2>
+                    <p>Current Points: <span id="storePointsDisplay" style="color: #fff; font-weight: bold;">0</span></p>
+                    <p style="font-size: 0.8em; margin-top: 5px;">Each upgrade costs <span id="upgradeCostDisplay" style="color: #ffcc00;">500</span> pts</p>
+                </div>
+                <div id="upgradeContainer" class="upgrade-container">
+                    <!-- Cards will be injected here -->
+                </div>
+                <div class="store-footer">
+                    <button id="refreshBtn" class="refresh-button">
+                        REFRESH CHOICES
+                        <div id="refreshCost" class="refresh-cost">Cost: 300 pts</div>
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -66,213 +111,6 @@ document.addEventListener("DOMContentLoaded", () => {
     game.resetGame();
   };
 });
-
-```
-
-## cod_zombie/assets/style.css
-
-```css
-/* style.css */
-@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap");
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    background: #0a0a0a;
-    font-family: "JetBrains Mono", monospace;
-    color: #e0e0e0;
-    overflow: hidden;
-    width: 100vw;
-    height: 100vh;
-}
-
-#gameContainer {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    /* Subtle scanline effect for a retro-tactical look */
-    background:
-        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%),
-        linear-gradient(
-            90deg,
-            rgba(255, 0, 0, 0.03),
-            rgba(0, 255, 0, 0.01),
-            rgba(0, 0, 255, 0.03)
-        );
-    background-size:
-        100% 4px,
-        3px 100%;
-    border: 4px solid #3d4035; /* Olive drab border */
-}
-
-#gameCanvas {
-    display: block;
-    width: 100%;
-    height: 100%;
-    background: #121410;
-    cursor: crosshair;
-}
-
-/* TACTICAL HUD STYLE */
-
-#ui {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    z-index: 100;
-    background: rgba(26, 28, 22, 0.9); /* Dark Olive */
-    padding: 15px;
-    border-left: 4px solid #8ba35d; /* Status Accent */
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    min-width: 220px;
-    box-shadow: 10px 10px 0px rgba(0, 0, 0, 0.5);
-}
-
-.ui-item {
-    font-size: 14px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: #8ba35d;
-    display: flex;
-    justify-content: space-between;
-    border-bottom: 1px solid rgba(139, 163, 93, 0.2);
-    padding: 4px 0;
-}
-
-.ui-item span {
-    color: #fff;
-    font-weight: 700;
-}
-
-/* Warning Colors */
-#health {
-    border-left: 4px solid #ff4444;
-    padding-left: 10px;
-    margin-top: 5px;
-}
-#health span {
-    color: #ff4444;
-}
-
-#ammo {
-    border-left: 4px solid #ffcc00;
-    padding-left: 10px;
-}
-#ammo span {
-    color: #ffcc00;
-}
-
-/* GAME OVER SCREEN - GRITTY STYLE */
-
-#gameOver {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: #1a0a0a;
-    border: 2px solid #ff4444;
-    padding: 50px;
-    text-align: center;
-    z-index: 200;
-    display: none;
-    box-shadow:
-        0 0 50px rgba(255, 68, 68, 0.2),
-        20px 20px 0px #000;
-}
-
-#gameOver h1 {
-    font-size: 64px;
-    color: #ff4444;
-    margin-bottom: 30px;
-    letter-spacing: -2px;
-    font-weight: 800;
-}
-
-#gameOver p {
-    font-size: 18px;
-    margin-bottom: 10px;
-    color: #888;
-    text-transform: uppercase;
-}
-
-#gameOver span {
-    color: #fff;
-}
-
-#gameOver button {
-    margin-top: 30px;
-    padding: 15px 40px;
-    background: transparent;
-    border: 2px solid #ff4444;
-    color: #ff4444;
-    font-family: "JetBrains Mono", monospace;
-    font-weight: bold;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-#gameOver button:hover {
-    background: #ff4444;
-    color: #1a0a0a;
-    box-shadow: 0 0 20px rgba(255, 68, 68, 0.4);
-}
-
-/* Reload Spinner Animation */
-@keyframes spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-.reloading-icon {
-    display: inline-block;
-    margin-left: 10px;
-    width: 12px;
-    height: 12px;
-    border: 2px solid rgba(255, 204, 0, 0.3);
-    border-top: 2px solid #ffcc00;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    vertical-align: middle;
-}
-
-/* Optional: Pulse effect for the ammo text while reloading */
-.ammo-reloading {
-    color: #ff4444 !important;
-    font-style: italic;
-}
-
-#wave {
-    transition: all 0.3s ease;
-}
-
-/* Add a class for the wave text when waiting */
-.wave-waiting {
-    animation: pulse-red 1s infinite;
-    color: #ff4444 !important;
-}
-
-@keyframes pulse-red {
-    0% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0.5;
-    }
-    100% {
-        opacity: 1;
-    }
-}
 
 ```
 
@@ -357,26 +195,39 @@ export class CollisionDetector {
     // Bullet-zombie collisions
     for (let i = bullets.length - 1; i >= 0; i--) {
       for (let j = zombies.length - 1; j >= 0; j--) {
-        const bullet = bullets[i];
-        const zombie = zombies[j];
+          const bullet = bullets[i];
+          const zombie = zombies[j];
 
-        if (
-          bullet.x > zombie.x &&
-          bullet.x < zombie.x + zombie.width &&
-          bullet.y > zombie.y &&
-          bullet.y < zombie.y + zombie.height
-        ) {
-          zombie.health -= bullet.damage;
-          bullets.splice(i, 1);
-          game.points += POINTS_PER_HIT;
+          if (
+            bullet.x > zombie.x &&
+            bullet.x < zombie.x + zombie.width &&
+            bullet.y > zombie.y &&
+            bullet.y < zombie.y + zombie.height
+          ) {
+            let damage = bullet.damage;
+            
+            // Critical Chance (Double Damage)
+            if (game.modifiers.critChance && Math.random() < game.modifiers.critChance) {
+                damage *= 2;
+            }
 
-          if (zombie.health <= 0) {
-            zombies.splice(j, 1);
-            game.kills += 1;
-            game.points += POINTS_PER_KILL;
+            zombie.health -= damage;
+            bullets.splice(i, 1);
+            game.points += POINTS_PER_HIT;
+
+            if (zombie.health <= 0) {
+              zombies.splice(j, 1);
+              game.kills += 1;
+              game.points += POINTS_PER_KILL;
+
+              // Heal on Kill modifier
+              if (game.modifiers.healOnKill) {
+                  game.health = Math.min(game.player.maxHealth, game.health + game.modifiers.healOnKill);
+              }
+            }
+            break;
           }
-          break;
-        }
+
       }
     }
 
@@ -388,9 +239,65 @@ export class CollisionDetector {
         player.y < zombie.y + zombie.height &&
         player.y + player.height > zombie.y
       ) {
-        game.health -= HEALTH_LOSS_PER_ZOMBIE_COLLISION;
+        let damage = HEALTH_LOSS_PER_ZOMBIE_COLLISION;
+        if (player.damageReduction) {
+            damage *= player.damageReduction;
+        }
+        game.health -= damage;
         if (game.health <= 0) {
           game.endGame();
+        }
+      }
+    }
+  }
+
+  resolveObstacleCollisions(entity, obstacles) {
+    for (let obstacle of obstacles) {
+      if (
+        entity.x < obstacle.x + obstacle.width &&
+        entity.x + entity.width > obstacle.x &&
+        entity.y < obstacle.y + obstacle.height &&
+        entity.y + entity.height > obstacle.y
+      ) {
+        // Find the overlap on each side
+        const overlapLeft = entity.x + entity.width - obstacle.x;
+        const overlapRight = obstacle.x + obstacle.width - entity.x;
+        const overlapTop = entity.y + entity.height - obstacle.y;
+        const overlapBottom = obstacle.y + obstacle.height - entity.y;
+
+        // Find the smallest overlap
+        const minOverlap = Math.min(
+          overlapLeft,
+          overlapRight,
+          overlapTop,
+          overlapBottom
+        );
+
+        if (minOverlap === overlapLeft) {
+          entity.x -= overlapLeft;
+        } else if (minOverlap === overlapRight) {
+          entity.x += overlapRight;
+        } else if (minOverlap === overlapTop) {
+          entity.y -= overlapTop;
+        } else if (minOverlap === overlapBottom) {
+          entity.y += overlapBottom;
+        }
+      }
+    }
+  }
+
+  checkBulletObstacleCollisions(bullets, obstacles) {
+    for (let i = bullets.length - 1; i >= 0; i--) {
+      const bullet = bullets[i];
+      for (let obstacle of obstacles) {
+        if (
+          bullet.x > obstacle.x &&
+          bullet.x < obstacle.x + obstacle.width &&
+          bullet.y > obstacle.y &&
+          bullet.y < obstacle.y + obstacle.height
+        ) {
+          bullets.splice(i, 1);
+          break;
         }
       }
     }
@@ -409,24 +316,24 @@ export const GAME_CONTAINER_ID = "gameContainer";
 
 export const PLAYER_WIDTH = 30;
 export const PLAYER_HEIGHT = 40;
-export const PLAYER_SPEED = 4;
+export const PLAYER_SPEED = 6;
 export const PLAYER_INITIAL_HEALTH = 100;
 export const PLAYER_MAX_AMMO = 30;
 
-export const BULLET_SPEED = 20;
+export const BULLET_SPEED = 25;
 export const BULLET_WIDTH = 4;
 export const BULLET_HEIGHT = 10;
 
 export const ZOMBIE_WIDTH = 25;
 export const ZOMBIE_HEIGHT = 35;
-export const ZOMBIE_INITIAL_SPEED_MULTIPLIER = 0.1;
-export const ZOMBIE_INITIAL_HEALTH_MULTIPLIER = 15; // Increased from 0.5 to 15
-export const ZOMBIE_BASE_COUNT = 3;
-export const ZOMBIE_COUNT_PER_WAVE = 2;
+export const ZOMBIE_INITIAL_SPEED_MULTIPLIER = 0.4;
+export const ZOMBIE_INITIAL_HEALTH_MULTIPLIER = 8; // Reduced from 15 to 8
+export const ZOMBIE_BASE_COUNT = 6;
+export const ZOMBIE_COUNT_PER_WAVE = 4;
 
-export const POINTS_PER_HIT = 10;
-export const POINTS_PER_KILL = 100;
-export const HEALTH_LOSS_PER_ZOMBIE_COLLISION = 1;
+export const POINTS_PER_HIT = 2;
+export const POINTS_PER_KILL = 20;
+export const HEALTH_LOSS_PER_ZOMBIE_COLLISION = 0.25;
 
 export const UI_ELEMENT_IDS = {
   wave: "wave",
@@ -448,6 +355,7 @@ export const COLORS = {
   zombie: "#94a3b8", // Grayish zombie
   zombieEye: "#ef4444", // Red eyes
   canvasBackground: "#0f172a", // Dark blue background
+  obstacle: "#334155", // Slate obstacle
 };
 
 ```
@@ -460,6 +368,7 @@ export const COLORS = {
 // weapon
 import { WeaponManager } from "./weapon/weaponManager.js";
 import { HandgunVX9Nightfall } from "./weapon/handgun_vx-9_nightfall.js";
+import { AssaultRifleARC7Vanguard } from "./weapon/assault_rifle_arc-7_vanguard.js";
 
 import { Player } from "./player.js";
 import { BulletManager } from "./bulletManager.js";
@@ -469,6 +378,8 @@ import { WaveManager } from "./waveManager.js";
 import { Renderer } from "./renderer.js";
 import { UIManager } from "./uiManager.js";
 import { InputHandler } from "./inputHandler.js";
+import { MapManager } from "./mapManager.js";
+import { StoreManager } from "./storeManager.js";
 import {
   GAME_CANVAS_ID,
   GAME_CONTAINER_ID,
@@ -483,6 +394,12 @@ export class Game {
     this.points = 0;
     this.health = PLAYER_INITIAL_HEALTH;
     this.isGameOver = false;
+    this.isPaused = false;
+    this.modifiers = {
+        healOnKill: 0,
+        ammoBonus: 0,
+        critChance: 0
+    };
 
     this.canvas = document.getElementById(GAME_CANVAS_ID);
     this.ctx = this.canvas.getContext("2d");
@@ -495,10 +412,17 @@ export class Game {
     this.waveManager = new WaveManager();
     this.renderer = new Renderer(this.ctx);
     this.uiManager = new UIManager();
+    this.mapManager = new MapManager();
+    this.storeManager = new StoreManager(this);
+
+    document.getElementById("refreshBtn").addEventListener("click", () => {
+        this.storeManager.refresh();
+    });
 
     // Weapon Manager
     this.weaponManager = new WeaponManager();
     this.weaponManager.addWeapon(new HandgunVX9Nightfall());
+    this.weaponManager.addWeapon(new AssaultRifleARC7Vanguard());
 
     this.inputHandler = new InputHandler(this.player, this, this.weaponManager);
 
@@ -538,11 +462,22 @@ export class Game {
 
   initGame() {
     this.player.resetPosition(this.canvas.width, this.canvas.height);
+    this.mapManager.generateMap(
+      this.canvas.width,
+      this.canvas.height,
+      this.player.x,
+      this.player.y,
+    );
     this.zombieManager.spawnZombies(
       this.canvas.width,
       this.canvas.height,
       this.wave,
     );
+    
+    // Ensure only one loop is running
+    if (this.animationFrameId) {
+        cancelAnimationFrame(this.animationFrameId);
+    }
     this.gameLoop();
   }
 
@@ -552,7 +487,40 @@ export class Game {
   }
 
   gameLoop() {
-    if (this.isGameOver) return;
+    if (this.isGameOver || this.isPaused) return;
+
+    // Use a local variable for the animation frame ID
+    this.animationFrameId = requestAnimationFrame(this.gameLoop.bind(this));
+
+    // Find nearest zombie for auto-aim
+    let nearestZombie = null;
+    let minDistance = Infinity;
+    const playerCenterX = this.player.x + this.player.width / 2;
+    const playerCenterY = this.player.y + this.player.height / 2;
+
+    for (let zombie of this.zombieManager.zombies) {
+      const zombieCenterX = zombie.x + zombie.width / 2;
+      const zombieCenterY = zombie.y + zombie.height / 2;
+      const dist = Math.sqrt(
+        Math.pow(zombieCenterX - playerCenterX, 2) +
+          Math.pow(zombieCenterY - playerCenterY, 2)
+      );
+      if (dist < minDistance) {
+        minDistance = dist;
+        nearestZombie = zombie;
+      }
+    }
+
+    if (nearestZombie) {
+      const targetX = nearestZombie.x + nearestZombie.width / 2;
+      const targetY = nearestZombie.y + nearestZombie.height / 2;
+      this.player.updateRotationToTarget(targetX, targetY);
+      
+      // Update weapon target for auto-aim
+      if (this.weaponManager.getCurrentWeapon()) {
+        this.weaponManager.getCurrentWeapon()._target = { x: targetX, y: targetY };
+      }
+    }
 
     this.player.update(this.canvas.width, this.canvas.height);
 
@@ -574,6 +542,23 @@ export class Game {
 
     this.bulletManager.update(this.canvas.width, this.canvas.height);
     this.zombieManager.update(this.player.x, this.player.y);
+
+    // Obstacle collisions
+    this.collisionDetector.resolveObstacleCollisions(
+      this.player,
+      this.mapManager.obstacles,
+    );
+    this.zombieManager.zombies.forEach((zombie) => {
+      this.collisionDetector.resolveObstacleCollisions(
+        zombie,
+        this.mapManager.obstacles,
+      );
+    });
+    this.collisionDetector.checkBulletObstacleCollisions(
+      this.bulletManager.bullets,
+      this.mapManager.obstacles,
+    );
+
     this.collisionDetector.checkCollisions(
       this.bulletManager.bullets,
       this.zombieManager.zombies,
@@ -588,14 +573,13 @@ export class Game {
 
     // Draw
     this.renderer.clearCanvas(this.canvas.width, this.canvas.height);
+    this.renderer.drawObstacles(this.mapManager.obstacles);
     this.renderer.drawPlayer(this.player);
     this.renderer.drawBullets(this.bulletManager.bullets, this.bulletImage);
-    this.renderer.drawZombies(this.zombieManager.zombies);
+    this.renderer.drawZombies(this.zombieManager.zombies, nearestZombie);
 
     // Update UI
     this.uiManager.updateUI(this);
-
-    requestAnimationFrame(this.gameLoop.bind(this));
   }
 
   endGame() {
@@ -610,6 +594,12 @@ export class Game {
     this.health = PLAYER_INITIAL_HEALTH;
     this.ammo = PLAYER_MAX_AMMO;
     this.isGameOver = false;
+    this.isPaused = false;
+    this.modifiers = {
+        healOnKill: 0,
+        ammoBonus: 0,
+        critChance: 0
+    };
 
     this.bulletManager.clear();
     this.zombieManager.clear();
@@ -652,6 +642,7 @@ export class InputHandler {
   }
 
   handleKeyDown(e) {
+    if (this.game.isPaused) return;
     if (e.key === "a") this.player.moveLeft = true;
     if (e.key === "d") this.player.moveRight = true;
     if (e.key === "w") this.player.moveUp = true;
@@ -666,6 +657,11 @@ export class InputHandler {
     if (e.key === "q" || e.key === "Q") {
       this.game.weaponManager.switchWeapon();
     }
+
+    // fire mode switching
+    if (e.key === "b" || e.key === "B") {
+      this.game.weaponManager.switchFireMode();
+    }
   }
 
   handleKeyUp(e) {
@@ -676,7 +672,7 @@ export class InputHandler {
   }
 
   handleMouseDown(e) {
-    if (this.game.isGameOver) return;
+    if (this.game.isGameOver || this.game.isPaused) return;
     const rect = this.game.canvas.getBoundingClientRect();
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
@@ -691,12 +687,92 @@ export class InputHandler {
 
 ```
 
+## cod_zombie/js/mapManager.js
+
+```javascript
+// cod_zombie/js/mapManager.js
+
+export class MapManager {
+  constructor() {
+    this.obstacles = [];
+    this.obstacleCount = 10;
+    this.minSize = 50;
+    this.maxSize = 150;
+  }
+
+  generateMap(width, height, playerX, playerY, safeDistance = 150) {
+    this.obstacles = [];
+    for (let i = 0; i < this.obstacleCount; i++) {
+      let obstacle;
+      let isValid = false;
+      let attempts = 0;
+
+      while (!isValid && attempts < 100) {
+        const obsWidth = Math.random() * (this.maxSize - this.minSize) + this.minSize;
+        const obsHeight = Math.random() * (this.maxSize - this.minSize) + this.minSize;
+        const obsX = Math.random() * (width - obsWidth);
+        const obsY = Math.random() * (height - obsHeight);
+
+        obstacle = {
+          x: obsX,
+          y: obsY,
+          width: obsWidth,
+          height: obsHeight,
+        };
+
+        // Check distance from player
+        const centerX = obsX + obsWidth / 2;
+        const centerY = obsY + obsHeight / 2;
+        const dist = Math.sqrt(
+          Math.pow(centerX - playerX, 2) + Math.pow(centerY - playerY, 2)
+        );
+
+        if (dist > safeDistance) {
+          isValid = true;
+          // Also check for overlaps with existing obstacles
+          for (let other of this.obstacles) {
+            if (this.isOverlapping(obstacle, other)) {
+              isValid = false;
+              break;
+            }
+          }
+        }
+        attempts++;
+      }
+
+      if (isValid) {
+        this.obstacles.push(obstacle);
+      }
+    }
+  }
+
+  isOverlapping(rect1, rect2) {
+    return (
+      rect1.x < rect2.x + rect2.width &&
+      rect1.x + rect1.width > rect2.x &&
+      rect1.y < rect2.y + rect2.height &&
+      rect1.y + rect1.height > rect2.y
+    );
+  }
+
+  clear() {
+    this.obstacles = [];
+  }
+}
+
+```
+
 ## cod_zombie/js/player.js
 
 ```javascript
 // cod_zombie/js/player.js
 
-import { PLAYER_WIDTH, PLAYER_HEIGHT, PLAYER_SPEED } from "./constants.js";
+import {
+  PLAYER_WIDTH,
+  PLAYER_HEIGHT,
+  PLAYER_SPEED,
+  PLAYER_INITIAL_HEALTH,
+} from "./constants.js";
 
 export class Player {
   constructor(canvasWidth, canvasHeight) {
@@ -705,6 +781,8 @@ export class Player {
     this.width = PLAYER_WIDTH;
     this.height = PLAYER_HEIGHT;
     this.speed = PLAYER_SPEED;
+    this.maxHealth = PLAYER_INITIAL_HEALTH;
+    this.damageReduction = 1.0;
     this.moveLeft = false;
     this.moveRight = false;
     this.moveUp = false;
@@ -718,6 +796,12 @@ export class Player {
   updateRotation(mouseX, mouseY) {
     const dx = mouseX - (this.x + this.width / 2);
     const dy = mouseY - (this.y + this.height / 2);
+    this.angle = Math.atan2(dy, dx);
+  }
+
+  updateRotationToTarget(targetX, targetY) {
+    const dx = targetX - (this.x + this.width / 2);
+    const dy = targetY - (this.y + this.height / 2);
     this.angle = Math.atan2(dy, dx);
   }
 
@@ -807,7 +891,7 @@ export class Renderer {
     }
   }
 
-  drawZombies(zombies) {
+  drawZombies(zombies, nearestZombie = null) {
     for (let zombie of zombies) {
       this.ctx.fillStyle = COLORS.zombie;
       this.ctx.fillRect(zombie.x, zombie.y, zombie.width, zombie.height);
@@ -816,7 +900,212 @@ export class Renderer {
       this.ctx.fillStyle = COLORS.zombieEye;
       this.ctx.fillRect(zombie.x + 5, zombie.y + 10, 5, 5);
       this.ctx.fillRect(zombie.x + 15, zombie.y + 10, 5, 5);
+
+      // Zombie Health Bar
+      this.drawZombieHealthBar(zombie);
+
+      // Draw arrow if this is the nearest zombie
+      if (zombie === nearestZombie) {
+        this.drawTargetArrow(zombie);
+      }
     }
+  }
+
+  drawZombieHealthBar(zombie) {
+    const barWidth = zombie.width;
+    const barHeight = 4;
+    const x = zombie.x;
+    const y = zombie.y - 8;
+
+    // Background (gray)
+    this.ctx.fillStyle = "rgba(50, 50, 50, 0.5)";
+    this.ctx.fillRect(x, y, barWidth, barHeight);
+
+    // Health Fill (red)
+    const healthPercent = Math.max(0, zombie.health / zombie.maxHealth);
+    this.ctx.fillStyle = "#ff4444";
+    this.ctx.fillRect(x, y, barWidth * healthPercent, barHeight);
+
+    // Border
+    this.ctx.strokeStyle = "rgba(0, 0, 0, 0.8)";
+    this.ctx.lineWidth = 1;
+    this.ctx.strokeRect(x, y, barWidth, barHeight);
+  }
+
+  drawTargetArrow(zombie) {
+
+    const arrowSize = 10;
+    const bounceOffset = Math.sin(Date.now() / 100) * 5;
+    const x = zombie.x + zombie.width / 2;
+    const y = zombie.y - 15 + bounceOffset;
+
+    this.ctx.save();
+    this.ctx.fillStyle = "#ffcc00"; // Gold/Yellow arrow
+    this.ctx.beginPath();
+    this.ctx.moveTo(x - arrowSize, y - arrowSize);
+    this.ctx.lineTo(x + arrowSize, y - arrowSize);
+    this.ctx.lineTo(x, y);
+    this.ctx.closePath();
+    this.ctx.fill();
+    
+    // Add a small stroke for better visibility
+    this.ctx.strokeStyle = "#000";
+    this.ctx.lineWidth = 1;
+    this.ctx.stroke();
+    this.ctx.restore();
+  }
+
+  drawObstacles(obstacles) {
+    this.ctx.fillStyle = COLORS.obstacle;
+    for (let obstacle of obstacles) {
+      this.ctx.fillRect(
+        obstacle.x,
+        obstacle.y,
+        obstacle.width,
+        obstacle.height
+      );
+      // Optional: Add a border to obstacles
+      this.ctx.strokeStyle = "#475569";
+      this.ctx.lineWidth = 2;
+      this.ctx.strokeRect(
+        obstacle.x,
+        obstacle.y,
+        obstacle.width,
+        obstacle.height
+      );
+    }
+  }
+}
+
+```
+
+## cod_zombie/js/storeManager.js
+
+```javascript
+// js/storeManager.js
+import { UPGRADES } from "./upgradeRegistry.js";
+
+export class StoreManager {
+  constructor(game) {
+    this.game = game;
+    this.isOpen = false;
+    this.currentChoices = [];
+    this.refreshCost = 300;
+    this.refreshIncrement = 150;
+    this.upgradeCost = 500;
+    this.appliedUpgrades = [];
+    
+    // UI Elements
+    this.overlay = document.getElementById("storeOverlay");
+    this.upgradeContainer = document.getElementById("upgradeContainer");
+    this.refreshBtn = document.getElementById("refreshBtn");
+    this.refreshCostDisplay = document.getElementById("refreshCost");
+    this.pointsDisplay = document.getElementById("storePointsDisplay");
+  }
+
+  open() {
+    this.isOpen = true;
+    this.game.isPaused = true;
+    this.refreshCost = 300;
+    this.generateChoices();
+    this.updateUI();
+    this.overlay.style.display = "flex";
+  }
+
+  close() {
+    this.isOpen = false;
+    this.game.isPaused = false;
+    this.overlay.style.display = "none";
+    // Wave Manager will handle the next wave spawn
+  }
+
+  generateChoices() {
+    const shuffled = [...UPGRADES].sort(() => 0.5 - Math.random());
+    this.currentChoices = shuffled.slice(0, 3);
+  }
+
+  refresh() {
+    if (this.game.points >= this.refreshCost) {
+      this.game.points -= this.refreshCost;
+      this.refreshCost += this.refreshIncrement;
+      this.generateChoices();
+      this.updateUI();
+    }
+  }
+
+  selectUpgrade(upgrade) {
+    if (this.game.points < this.upgradeCost) return;
+
+    this.game.points -= this.upgradeCost;
+    this.applyUpgrade(upgrade);
+    this.appliedUpgrades.push(upgrade);
+    this.close();
+    
+    // Trigger next wave
+    if (this.game.waveManager) {
+        this.game.waveManager.startNextWave(this.game, this.game.zombieManager);
+    }
+    
+    // Restart the game loop since it was paused
+    this.game.gameLoop();
+  }
+
+  applyUpgrade(upgrade) {
+    const { category, stat, value, type } = upgrade;
+
+    if (category === "player") {
+      if (type === "add") {
+        this.game.player[stat] = (this.game.player[stat] || 0) + value;
+        if (stat === "maxHealth") {
+            this.game.health += value; // Heal for the bonus amount
+        }
+      } else if (type === "multiply") {
+        this.game.player[stat] = (this.game.player[stat] || 1) * value;
+      }
+    } else if (category === "weapon") {
+      // Apply to all weapons in the manager
+      this.game.weaponManager.weapons.forEach(weapon => {
+        if (type === "multiply") {
+          weapon[stat] = (weapon[stat] || 1) * value;
+          // For magazine capacity, we might need to adjust current ammo
+          if (stat === "magazineCapacity") {
+              weapon.magazineCapacity = Math.round(weapon.magazineCapacity);
+          }
+        }
+      });
+    } else if (category === "utility") {
+      this.game.modifiers[stat] = (this.game.modifiers[stat] || 0) + value;
+    }
+  }
+
+  updateUI() {
+    this.pointsDisplay.textContent = this.game.points;
+    this.upgradeContainer.innerHTML = "";
+    
+    const canAffordUpgrade = this.game.points >= this.upgradeCost;
+
+    this.currentChoices.forEach(upgrade => {
+      const card = document.createElement("div");
+      card.className = "upgrade-card";
+      if (!canAffordUpgrade) {
+        card.style.opacity = "0.5";
+        card.style.cursor = "not-allowed";
+      }
+
+      card.innerHTML = `
+        <div class="upgrade-name">${upgrade.name}</div>
+        <div class="upgrade-description">${upgrade.description}</div>
+        <div style="color: #ffcc00; font-size: 0.9em; margin-top: auto;">COST: ${this.upgradeCost} PTS</div>
+      `;
+
+      if (canAffordUpgrade) {
+        card.onclick = () => this.selectUpgrade(upgrade);
+      }
+      this.upgradeContainer.appendChild(card);
+    });
+
+    this.refreshBtn.disabled = this.game.points < this.refreshCost;
+    this.refreshCostDisplay.textContent = `Cost: ${this.refreshCost} pts`;
   }
 }
 
@@ -843,6 +1132,12 @@ export class UIManager {
 
     if (weaponInfo && weapon) {
       const ammoElement = this.uiElements.ammo;
+      const weaponNameElement = document.getElementById("weaponName");
+      const fireModeElement = document.getElementById("fireMode");
+
+      if (weaponNameElement) {
+        weaponNameElement.textContent = weaponInfo.name;
+      }
 
       // Check if the weapon is currently in its reloading state
       if (weapon.isReloading) {
@@ -858,9 +1153,8 @@ export class UIManager {
         maxAmmoElement.textContent = weaponInfo.magazineCapacity;
       }
 
-      const weaponNameElement = document.getElementById("weaponName");
-      if (weaponNameElement) {
-        weaponNameElement.textContent = weaponInfo.name;
+      if (fireModeElement) {
+        fireModeElement.textContent = `[${weaponInfo.fireMode.toUpperCase()}]`;
       }
     }
 
@@ -885,7 +1179,15 @@ export class UIManager {
     // Update other UI elements
     this.uiElements.kills.textContent = game.kills;
     this.uiElements.points.textContent = game.points;
-    this.uiElements.health.textContent = Math.max(0, Math.floor(game.health));
+    const currentHealth = Math.max(0, Math.floor(game.health));
+    this.uiElements.health.textContent = currentHealth;
+
+    // Update health bar fill
+    const healthBarFill = document.getElementById("healthBarFill");
+    if (healthBarFill) {
+      const healthPercentage = (currentHealth / game.player.maxHealth) * 100;
+      healthBarFill.style.width = `${healthPercentage}%`;
+    }
   }
 
   showGameOver(game) {
@@ -902,6 +1204,106 @@ export class UIManager {
 
 ```
 
+## cod_zombie/js/upgradeRegistry.js
+
+```javascript
+// js/upgradeRegistry.js
+
+export const UPGRADES = [
+  {
+    id: "vitality",
+    name: "Vitality Boost",
+    description: "Permanently increase Max Health by +25.",
+    category: "player",
+    type: "add",
+    stat: "maxHealth",
+    value: 25
+  },
+  {
+    id: "lightweight",
+    name: "Lightweight",
+    description: "Increase movement speed by 15%.",
+    category: "player",
+    type: "multiply",
+    stat: "speed",
+    value: 1.15
+  },
+  {
+    id: "juggernaut",
+    name: "Juggernaut",
+    description: "Reduce incoming damage by 20%.",
+    category: "player",
+    type: "multiply",
+    stat: "damageReduction",
+    value: 0.8
+  },
+  {
+    id: "hollow_point",
+    name: "Hollow Point",
+    description: "Increase all weapon damage by 25%.",
+    category: "weapon",
+    type: "multiply",
+    stat: "baseDamage",
+    value: 1.25
+  },
+  {
+    id: "rapid_fire",
+    name: "Rapid Fire",
+    description: "Increase fire rate by 20%.",
+    category: "weapon",
+    type: "multiply",
+    stat: "fireRate",
+    value: 1.2
+  },
+  {
+    id: "sleight_of_hand",
+    name: "Sleight of Hand",
+    description: "Improve reload speed by 30%.",
+    category: "weapon",
+    type: "multiply",
+    stat: "reloadTime",
+    value: 0.7 // Lower is faster
+  },
+  {
+    id: "extended_mags",
+    name: "Extended Mags",
+    description: "Increase magazine capacity by 40%.",
+    category: "weapon",
+    type: "multiply",
+    stat: "magazineCapacity",
+    value: 1.4
+  },
+  {
+    id: "scavenger",
+    name: "Scavenger",
+    description: "Heal +5 HP on every zombie kill.",
+    category: "utility",
+    type: "special",
+    stat: "healOnKill",
+    value: 5
+  },
+  {
+    id: "munitions",
+    name: "Munitions Bag",
+    description: "Refill 50% extra reserve ammo at the start of each wave.",
+    category: "utility",
+    type: "special",
+    stat: "ammoBonus",
+    value: 0.5
+  },
+  {
+    id: "double_tap",
+    name: "Double Tap",
+    description: "15% chance to deal 2x damage on any shot.",
+    category: "utility",
+    type: "special",
+    stat: "critChance",
+    value: 0.15
+  }
+];
+
+```
+
 ## cod_zombie/js/waveManager.js
 
 ```javascript
@@ -910,7 +1312,10 @@ export class UIManager {
 export class WaveManager {
   constructor() {
     this.isWaitingForNextWave = false;
-    this.waveDelay = 3000; // 3 second pause between rounds
+    this.waveDelay = 1500; // 1.5 second pause between rounds
+
+    // Initialize the wave sound
+    this.waveSound = new Audio("assets/zombie_wave.mp3");
   }
 
   checkWaveComplete(zombies, game, zombieManager) {
@@ -922,21 +1327,61 @@ export class WaveManager {
       setTimeout(() => {
         game.wave += 1;
 
-        // Optional: Refill ammo on new round like COD (or keep as is)
-        const weapon = game.weaponManager.getCurrentWeapon();
-        if (weapon) {
-          weapon.reserveAmmo = weapon.maxAmmo - weapon.magazineCapacity;
+        // Check for Store every 5 waves
+        if (game.wave > 1 && (game.wave - 1) % 5 === 0) {
+            game.storeManager.open();
+            this.isWaitingForNextWave = false;
+            return;
         }
 
-        zombieManager.spawnZombies(
-          game.canvas.width,
-          game.canvas.height,
-          game.wave,
-        );
-
+        this.startNextWave(game, zombieManager);
         this.isWaitingForNextWave = false;
       }, this.waveDelay);
     }
+  }
+
+  startNextWave(game, zombieManager) {
+    // Play the wave sound when the new wave officially starts
+    this.playWaveSound();
+
+    // Regenerate Map
+    game.mapManager.generateMap(
+      game.canvas.width,
+      game.canvas.height,
+      game.player.x,
+      game.player.y,
+    );
+
+    // Optional: Refill ammo on new round like COD (or keep as is)
+    const weapon = game.weaponManager.getCurrentWeapon();
+    if (weapon) {
+      const bonusMultiplier = 1 + (game.modifiers.ammoBonus || 0);
+      weapon.reserveAmmo = Math.round((weapon.maxAmmo - weapon.magazineCapacity) * bonusMultiplier);
+    }
+
+    zombieManager.spawnZombies(
+      game.canvas.width,
+      game.canvas.height,
+      game.wave,
+    );
+
+    // If game was paused (e.g. by store), resume it
+    if (game.isPaused) {
+        game.isPaused = false;
+        // The game loop will naturally exit when isPaused is true, 
+        // and we need to restart it here.
+        game.gameLoop();
+    }
+  }
+
+  playWaveSound() {
+    if (!this.waveSound) return;
+
+    // Reset and play
+    this.waveSound.currentTime = 0;
+    this.waveSound.play().catch((e) => {
+      console.log("Wave sound blocked until user interaction.");
+    });
   }
 }
 
@@ -960,8 +1405,9 @@ export class Zombie {
     this.y = y;
     this.width = ZOMBIE_WIDTH;
     this.height = ZOMBIE_HEIGHT;
-    this.speed = 1 + wave * ZOMBIE_INITIAL_SPEED_MULTIPLIER;
-    this.health = 1 + wave * ZOMBIE_INITIAL_HEALTH_MULTIPLIER;
+    this.speed = 2 + wave * ZOMBIE_INITIAL_SPEED_MULTIPLIER;
+    this.maxHealth = 1 + wave * ZOMBIE_INITIAL_HEALTH_MULTIPLIER;
+    this.health = this.maxHealth;
   }
 
   update(playerX, playerY) {
@@ -1019,6 +1465,87 @@ export class ZombieManager {
 
 ```
 
+## cod_zombie/js/weapon/assault_rifle_arc-7_vanguard.js
+
+```javascript
+// js/weapon/assault_rifle_arc-7_vanguard.js
+
+import { WeaponBase } from "./weaponBase.js";
+
+export class AssaultRifleARC7Vanguard extends WeaponBase {
+  constructor() {
+    super({
+      // Weapon Identity
+      name: 'ARC-7 "Vanguard"',
+      type: "Assault Rifle / Full-Auto",
+      rarity: "Epic",
+      description:
+        "A reliable, high-output assault rifle designed for front-line suppression. The ARC-7 Vanguard provides sustained fire with manageable recoil, making it ideal for clearing waves of enemies.",
+
+      // Core Stats
+      baseDamage: 32,
+      headshotMultiplier: 1.5,
+      fireRate: 750, // rounds per minute
+      bulletSpeed: 1500,
+      effectiveRange: 600,
+      maxRange: 900,
+      armorPenetration: "High",
+
+      // Ammo & Reload
+      magazineCapacity: 30,
+      maxAmmo: 210,
+      reloadTime: 1.8,
+      emptyReloadTime: 2.4,
+
+      // Handling & Accuracy
+      recoil: "Medium",
+      hipFireAccuracy: 0.65,
+      adsAccuracy: 0.88,
+      movementPenalty: -0.12,
+      drawTime: 0.5,
+
+      fireMode: "auto",
+      availableFireModes: ["auto", "semi"],
+
+      // Special Effects
+      specialEffects: [
+        {
+          name: "Sustained Fire",
+          description:
+            "Accuracy gradually increases the longer you hold down the trigger",
+          type: "accuracy_boost",
+        }
+      ],
+    });
+
+    this.firingDuration = 0;
+    this.maxAccuracyBonus = 0.15;
+  }
+
+  _getFireData() {
+    const fireData = super._getFireData();
+    if (!fireData) {
+      this.firingDuration = 0;
+      return null;
+    }
+
+    // Apply accuracy bonus based on firing duration
+    const bonus = Math.min(this.firingDuration * 0.05, this.maxAccuracyBonus);
+    fireData.accuracy += bonus;
+    
+    this.firingDuration += (60 / this.fireRate); // Approximate time in seconds between shots
+    
+    return fireData;
+  }
+
+  stopFiring() {
+    super.stopFiring();
+    this.firingDuration = 0;
+  }
+}
+
+```
+
 ## cod_zombie/js/weapon/handgun_vx-9_nightfall.js
 
 ```javascript
@@ -1039,8 +1566,8 @@ export class HandgunVX9Nightfall extends WeaponBase {
       // Core Stats
       baseDamage: 28,
       headshotMultiplier: 1.8,
-      fireRate: 420, // rounds per minute
-      bulletSpeed: 520, // pixels per second (scaled from m/s)
+      fireRate: 500, // rounds per minute
+      bulletSpeed: 1200, // pixels per second (scaled from m/s)
       effectiveRange: 450, // pixels (scaled from 45 meters)
       maxRange: 700, // pixels (scaled from 70 meters)
       armorPenetration: "Medium",
@@ -1048,8 +1575,8 @@ export class HandgunVX9Nightfall extends WeaponBase {
       // Ammo & Reload
       magazineCapacity: 15,
       maxAmmo: 120,
-      reloadTime: 1.6, // seconds
-      emptyReloadTime: 2.1, // seconds
+      reloadTime: 1.2, // seconds
+      emptyReloadTime: 1.6, // seconds
 
       // Handling & Accuracy
       recoil: "Low",
@@ -1058,7 +1585,8 @@ export class HandgunVX9Nightfall extends WeaponBase {
       movementPenalty: -0.05,
       drawTime: 0.35, // seconds
 
-      fireMode: "burst", // semi, burst, auto
+      fireMode: "semi", // semi, burst, auto
+      availableFireModes: ["semi", "burst"],
       burstCount: 3, // comment this if not burst
 
       // Special Effects
@@ -1166,6 +1694,7 @@ export class WeaponBase {
 
     // Fire Mode
     this.fireMode = config.fireMode || "semi"; // 'semi', 'auto', 'burst'
+    this.availableFireModes = config.availableFireModes || [this.fireMode];
     this.burstCount = config.burstCount || 3;
 
     // Internal State
@@ -1317,6 +1846,19 @@ export class WeaponBase {
     return true;
   }
 
+  switchFireMode() {
+    if (this.availableFireModes.length <= 1) return false;
+
+    const currentIndex = this.availableFireModes.indexOf(this.fireMode);
+    const nextIndex = (currentIndex + 1) % this.availableFireModes.length;
+    this.fireMode = this.availableFireModes[nextIndex];
+    
+    // Reset firing state when switching modes
+    this.stopFiring();
+    
+    return true;
+  }
+
   playReloadSound(targetDuration) {
     if (!this.reloadSound) return;
 
@@ -1343,6 +1885,7 @@ export class WeaponBase {
       currentAmmo: this.currentAmmo,
       reserveAmmo: this.reserveAmmo,
       magazineCapacity: this.magazineCapacity,
+      fireMode: this.fireMode,
     };
   }
 }
@@ -1396,6 +1939,11 @@ export class WeaponManager {
   reload() {
     const weapon = this.getCurrentWeapon();
     return weapon ? weapon.reload() : false;
+  }
+
+  switchFireMode() {
+    const weapon = this.getCurrentWeapon();
+    return weapon ? weapon.switchFireMode() : false;
   }
 
   startFiring(targetX, targetY) {

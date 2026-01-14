@@ -26,6 +26,7 @@ export class InputHandler {
   }
 
   handleKeyDown(e) {
+    if (this.game.isPaused) return;
     if (e.key === "a") this.player.moveLeft = true;
     if (e.key === "d") this.player.moveRight = true;
     if (e.key === "w") this.player.moveUp = true;
@@ -55,7 +56,7 @@ export class InputHandler {
   }
 
   handleMouseDown(e) {
-    if (this.game.isGameOver) return;
+    if (this.game.isGameOver || this.game.isPaused) return;
     const rect = this.game.canvas.getBoundingClientRect();
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;

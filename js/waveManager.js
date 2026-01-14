@@ -3,7 +3,7 @@
 export class WaveManager {
   constructor() {
     this.isWaitingForNextWave = false;
-    this.waveDelay = 3000; // 3 second pause between rounds
+    this.waveDelay = 1500; // 1.5 second pause between rounds
 
     // Initialize the wave sound
     this.waveSound = new Audio("assets/zombie_wave.mp3");
@@ -18,31 +18,50 @@ export class WaveManager {
       setTimeout(() => {
         game.wave += 1;
 
-        // Play the wave sound when the new wave officially starts
-        this.playWaveSound();
-
-        // Regenerate Map
-        game.mapManager.generateMap(
-          game.canvas.width,
-          game.canvas.height,
-          game.player.x,
-          game.player.y,
-        );
-
-        // Optional: Refill ammo on new round like COD (or keep as is)
-        const weapon = game.weaponManager.getCurrentWeapon();
-        if (weapon) {
-          weapon.reserveAmmo = weapon.maxAmmo - weapon.magazineCapacity;
+        // Check for Store every 5 waves
+        if (game.wave > 1 && (game.wave - 1) % 5 === 0) {
+            game.storeManager.open();
+            this.isWaitingForNextWave = false;
+            return;
         }
 
-        zombieManager.spawnZombies(
-          game.canvas.width,
-          game.canvas.height,
-          game.wave,
-        );
-
+        this.startNextWave(game, zombieManager);
         this.isWaitingForNextWave = false;
       }, this.waveDelay);
+    }
+  }
+
+  startNextWave(game, zombieManager) {
+    // Play the wave sound when the new wave officially starts
+    this.playWaveSound();
+
+    // Regenerate Map
+    game.mapManager.generateMap(
+      game.canvas.width,
+      game.canvas.height,
+      game.player.x,
+      game.player.y,
+    );
+
+    // Optional: Refill ammo on new round like COD (or keep as is)
+    const weapon = game.weaponManager.getCurrentWeapon();
+    if (weapon) {
+      const bonusMultiplier = 1 + (game.modifiers.ammoBonus || 0);
+      weapon.reserveAmmo = Math.round((weapon.maxAmmo - weapon.magazineCapacity) * bonusMultiplier);
+    }
+
+    zombieManager.spawnZombies(
+      game.canvas.width,
+      game.canvas.height,
+      game.wave,
+    );
+
+    // If game was paused (e.g. by store), resume it
+    if (game.isPaused) {
+        game.isPaused = false;
+        // The game loop will naturally exit when isPaused is true, 
+        // and we need to restart it here.
+        game.gameLoop();
     }
   }
 

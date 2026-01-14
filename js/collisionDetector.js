@@ -11,26 +11,39 @@ export class CollisionDetector {
     // Bullet-zombie collisions
     for (let i = bullets.length - 1; i >= 0; i--) {
       for (let j = zombies.length - 1; j >= 0; j--) {
-        const bullet = bullets[i];
-        const zombie = zombies[j];
+          const bullet = bullets[i];
+          const zombie = zombies[j];
 
-        if (
-          bullet.x > zombie.x &&
-          bullet.x < zombie.x + zombie.width &&
-          bullet.y > zombie.y &&
-          bullet.y < zombie.y + zombie.height
-        ) {
-          zombie.health -= bullet.damage;
-          bullets.splice(i, 1);
-          game.points += POINTS_PER_HIT;
+          if (
+            bullet.x > zombie.x &&
+            bullet.x < zombie.x + zombie.width &&
+            bullet.y > zombie.y &&
+            bullet.y < zombie.y + zombie.height
+          ) {
+            let damage = bullet.damage;
+            
+            // Critical Chance (Double Damage)
+            if (game.modifiers.critChance && Math.random() < game.modifiers.critChance) {
+                damage *= 2;
+            }
 
-          if (zombie.health <= 0) {
-            zombies.splice(j, 1);
-            game.kills += 1;
-            game.points += POINTS_PER_KILL;
+            zombie.health -= damage;
+            bullets.splice(i, 1);
+            game.points += POINTS_PER_HIT;
+
+            if (zombie.health <= 0) {
+              zombies.splice(j, 1);
+              game.kills += 1;
+              game.points += POINTS_PER_KILL;
+
+              // Heal on Kill modifier
+              if (game.modifiers.healOnKill) {
+                  game.health = Math.min(game.player.maxHealth, game.health + game.modifiers.healOnKill);
+              }
+            }
+            break;
           }
-          break;
-        }
+
       }
     }
 
@@ -42,7 +55,11 @@ export class CollisionDetector {
         player.y < zombie.y + zombie.height &&
         player.y + player.height > zombie.y
       ) {
-        game.health -= HEALTH_LOSS_PER_ZOMBIE_COLLISION;
+        let damage = HEALTH_LOSS_PER_ZOMBIE_COLLISION;
+        if (player.damageReduction) {
+            damage *= player.damageReduction;
+        }
+        game.health -= damage;
         if (game.health <= 0) {
           game.endGame();
         }
