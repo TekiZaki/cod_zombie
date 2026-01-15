@@ -13,7 +13,7 @@ export class AssaultRifleARC7Vanguard extends WeaponBase {
         "A reliable, high-output assault rifle designed for front-line suppression. The ARC-7 Vanguard provides sustained fire with manageable recoil, making it ideal for clearing waves of enemies.",
 
       // Core Stats
-      baseDamage: 320, // normal is 32, but for faster wave I make it 320
+      baseDamage: 32,
       headshotMultiplier: 1.5,
       fireRate: 750, // rounds per minute
       bulletSpeed: 1500,

@@ -11,8 +11,6 @@ export class StoreManager {
     this.refreshIncrement = 150;
     this.upgradeCost = 500;
     this.appliedUpgrades = [];
-    this.purchaseLimit = 3;
-    this.purchasesInVisit = 0;
     
     // UI Elements
     this.overlay = document.getElementById("storeOverlay");
@@ -20,9 +18,7 @@ export class StoreManager {
     this.refreshBtn = document.getElementById("refreshBtn");
     this.refreshCostDisplay = document.getElementById("refreshCost");
     this.pointsDisplay = document.getElementById("storePointsDisplay");
-    this.purchaseLimitDisplay = document.getElementById("purchaseLimitDisplay");
     this.continueBtn = document.getElementById("continueBtn");
-
 
     if (this.continueBtn) {
         this.continueBtn.addEventListener("click", () => this.closeAndContinue());
@@ -33,12 +29,10 @@ export class StoreManager {
     this.isOpen = true;
     this.game.isPaused = true;
     this.refreshCost = 300;
-    this.purchasesInVisit = 0;
     this.generateChoices();
     this.updateUI();
     this.overlay.style.display = "flex";
   }
-
 
   close() {
     this.isOpen = false;
@@ -80,21 +74,17 @@ export class StoreManager {
   }
 
   selectUpgrade(upgrade) {
-    if (this.purchasesInVisit >= this.purchaseLimit) return;
-    
     const cost = upgrade.cost || this.upgradeCost;
     if (this.game.points < cost) return;
 
     this.game.points -= cost;
     this.applyUpgrade(upgrade);
     this.appliedUpgrades.push(upgrade);
-    this.purchasesInVisit++;
     
     // Instead of closing, we just update UI to allow more purchases
     this.generateChoices();
     this.updateUI();
   }
-
 
   applyUpgrade(upgrade) {
     const { category, stat, value, type } = upgrade;
@@ -130,23 +120,11 @@ export class StoreManager {
 
   updateUI() {
     this.pointsDisplay.textContent = Math.floor(this.game.points);
-    if (this.purchaseLimitDisplay) {
-        this.purchaseLimitDisplay.textContent = `UPGRADES REMAINING: ${this.purchaseLimit - this.purchasesInVisit}`;
-        if (this.purchasesInVisit >= this.purchaseLimit) {
-            this.purchaseLimitDisplay.style.color = "#ff4444";
-            this.purchaseLimitDisplay.textContent = "MAX UPGRADES REACHED FOR THIS VISIT";
-        } else {
-            this.purchaseLimitDisplay.style.color = "#4adeff";
-        }
-    }
-    
     this.upgradeContainer.innerHTML = "";
-    
-    const limitReached = this.purchasesInVisit >= this.purchaseLimit;
     
     this.currentChoices.forEach(upgrade => {
       const cost = upgrade.cost || this.upgradeCost;
-      const canAffordUpgrade = this.game.points >= cost && !limitReached;
+      const canAffordUpgrade = this.game.points >= cost;
       
       const card = document.createElement("div");
       card.className = "upgrade-card";
@@ -167,8 +145,7 @@ export class StoreManager {
       this.upgradeContainer.appendChild(card);
     });
 
-    this.refreshBtn.disabled = this.game.points < this.refreshCost || limitReached;
+    this.refreshBtn.disabled = this.game.points < this.refreshCost;
     this.refreshCostDisplay.textContent = `Cost: ${this.refreshCost} pts`;
   }
-
 }
