@@ -13,7 +13,7 @@ export class HandgunVX9Nightfall extends WeaponBase {
         "A compact, high-velocity sidearm developed for close-to-mid range combat. The VX-9 excels in accuracy and quick handling, making it a favorite backup weapon for elite operatives.",
 
       // Core Stats
-      baseDamage: 28,
+      baseDamage: 280, // normal is 20, but for faster wave I make it 200
       headshotMultiplier: 1.8,
       fireRate: 500, // rounds per minute
       bulletSpeed: 1200, // pixels per second (scaled from m/s)
