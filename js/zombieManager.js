@@ -19,9 +19,9 @@ export class ZombieManager {
     }
   }
 
-  update(playerX, playerY) {
+  update(playerX, playerY, obstacles) {
     for (let zombie of this.zombies) {
-      zombie.update(playerX, playerY);
+      zombie.update(playerX, playerY, obstacles, this.zombies);
     }
   }
 

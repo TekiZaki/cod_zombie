@@ -176,7 +176,7 @@ export class Game {
     }
 
     this.bulletManager.update(this.canvas.width, this.canvas.height);
-    this.zombieManager.update(this.player.x, this.player.y);
+    this.zombieManager.update(this.player.x, this.player.y, this.mapManager.obstacles);
 
     // Obstacle collisions
     this.collisionDetector.resolveObstacleCollisions(
