@@ -44,10 +44,18 @@ export class WaveManager {
       game.player.y,
     );
 
+    const isBossWave = game.wave % 5 === 0;
+
+    // Show boss wave UI notification
+    if (isBossWave) {
+      this.showBossIncomingUI();
+    }
+
     zombieManager.spawnZombies(
       WORLD_WIDTH,
       WORLD_HEIGHT,
       game.wave,
+      isBossWave
     );
 
     // If game was paused (e.g. by store), resume it
@@ -57,6 +65,29 @@ export class WaveManager {
         // and we need to restart it here.
         game.gameLoop();
     }
+  }
+
+  showBossIncomingUI() {
+    const notification = document.createElement("div");
+    notification.id = "bossNotification";
+    notification.style.position = "absolute";
+    notification.style.top = "20%";
+    notification.style.left = "50%";
+    notification.style.transform = "translate(-50%, -50%)";
+    notification.style.color = "#ff0000";
+    notification.style.fontSize = "4em";
+    notification.style.fontWeight = "bold";
+    notification.style.textShadow = "0 0 20px #ff0000";
+    notification.style.zIndex = "1000";
+    notification.style.pointerEvents = "none";
+    notification.textContent = "BOSS INCOMING";
+    notification.style.animation = "pulse 1s infinite alternate";
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+      notification.remove();
+    }, 3000);
   }
 
   playWaveSound() {

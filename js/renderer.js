@@ -91,13 +91,15 @@ export class Renderer {
 
   drawZombies(zombies, nearestZombie = null) {
     for (let zombie of zombies) {
-      this.ctx.fillStyle = COLORS.zombie;
+      this.ctx.fillStyle = zombie.isBoss ? "#4a0404" : COLORS.zombie;
       this.ctx.fillRect(zombie.x, zombie.y, zombie.width, zombie.height);
 
       // Eyes
       this.ctx.fillStyle = COLORS.zombieEye;
-      this.ctx.fillRect(zombie.x + 5, zombie.y + 10, 5, 5);
-      this.ctx.fillRect(zombie.x + 15, zombie.y + 10, 5, 5);
+      const eyeSize = zombie.isBoss ? 15 : 5;
+      const eyeOffset = zombie.isBoss ? 15 : 5;
+      this.ctx.fillRect(zombie.x + eyeOffset, zombie.y + eyeOffset * 2, eyeSize, eyeSize);
+      this.ctx.fillRect(zombie.x + zombie.width - eyeOffset - eyeSize, zombie.y + eyeOffset * 2, eyeSize, eyeSize);
 
       // Zombie Health Bar
       this.drawZombieHealthBar(zombie);

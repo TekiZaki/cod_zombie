@@ -8,49 +8,48 @@ export class MapManager {
     this.maxSize = 150;
   }
 
-  generateMap(width, height, playerX, playerY, safeDistance = 150) {
+  generateMap(width, height, playerX, playerY) {
     this.obstacles = [];
-    for (let i = 0; i < this.obstacleCount; i++) {
-      let obstacle;
-      let isValid = false;
-      let attempts = 0;
 
-      while (!isValid && attempts < 100) {
-        const obsWidth = Math.random() * (this.maxSize - this.minSize) + this.minSize;
-        const obsHeight = Math.random() * (this.maxSize - this.minSize) + this.minSize;
-        const obsX = Math.random() * (width - obsWidth);
-        const obsY = Math.random() * (height - obsHeight);
+    // "The High-Sec Outpost" - A unique fixed layout
+    const layout = [
+      // Central Hub
+      { x: width / 2 - 100, y: height / 2 - 100, w: 200, h: 200 },
+      
+      // Perimeter Walls (Upper)
+      { x: 200, y: 300, w: 400, h: 40 },
+      { x: width - 600, y: 300, w: 400, h: 40 },
+      
+      // Perimeter Walls (Lower)
+      { x: 200, y: height - 340, w: 400, h: 40 },
+      { x: width - 600, y: height - 340, w: 400, h: 40 },
+      
+      // Left Defensive Wing
+      { x: 400, y: 500, w: 40, h: 600 },
+      
+      // Right Defensive Wing
+      { x: width - 440, y: 500, w: 40, h: 600 },
 
-        obstacle = {
-          x: obsX,
-          y: obsY,
-          width: obsWidth,
-          height: obsHeight,
-        };
+      // Corner Bunkers
+      { x: 100, y: 100, w: 120, h: 120 },
+      { x: width - 220, y: 100, w: 120, h: 120 },
+      { x: 100, y: height - 220, w: 120, h: 120 },
+      { x: width - 220, y: height - 220, w: 120, h: 120 },
+      
+      // Scatter defenses
+      { x: width / 2 - 30, y: 150, w: 60, h: 60 },
+      { x: width / 2 - 30, y: height - 210, w: 60, h: 60 },
+      { x: 150, y: height / 2 - 30, w: 60, h: 60 },
+      { x: width - 210, y: height / 2 - 30, w: 60, h: 60 },
+    ];
 
-        // Check distance from player
-        const centerX = obsX + obsWidth / 2;
-        const centerY = obsY + obsHeight / 2;
-        const dist = Math.sqrt(
-          Math.pow(centerX - playerX, 2) + Math.pow(centerY - playerY, 2)
-        );
-
-        if (dist > safeDistance) {
-          isValid = true;
-          // Also check for overlaps with existing obstacles
-          for (let other of this.obstacles) {
-            if (this.isOverlapping(obstacle, other)) {
-              isValid = false;
-              break;
-            }
-          }
-        }
-        attempts++;
-      }
-
-      if (isValid) {
-        this.obstacles.push(obstacle);
-      }
+    for (let item of layout) {
+      this.obstacles.push({
+        x: item.x,
+        y: item.y,
+        width: item.w,
+        height: item.h
+      });
     }
   }
 
