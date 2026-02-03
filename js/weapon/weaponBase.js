@@ -39,6 +39,7 @@ export class WeaponBase {
     this.fireMode = config.fireMode || "semi"; // 'semi', 'auto', 'burst'
     this.availableFireModes = config.availableFireModes || [this.fireMode];
     this.burstCount = config.burstCount || 3;
+    this.burstDelay = config.burstDelay || 300; // Default 300ms delay between bursts
 
     // Internal State
     this.isReloading = false;
@@ -80,8 +81,7 @@ export class WeaponBase {
     }
 
     if (this.fireMode === "burst" && !this._isBursting) {
-      this._isBursting = true;
-      this._burstsLeft = this.burstCount;
+      // We don't set _isBursting here anymore, let update() handle it with canFire()
     }
   }
 
@@ -136,7 +136,8 @@ export class WeaponBase {
         break;
 
       case "burst":
-        if (this.isFiring && !this._isBursting) {
+        // Start a new burst sequence ONLY if we aren't already bursting AND canFire()
+        if (this.isFiring && !this._isBursting && this.canFire()) {
           this._isBursting = true;
           this._burstsLeft = this.burstCount;
         }
@@ -149,8 +150,9 @@ export class WeaponBase {
 
             if (this._burstsLeft === 0 || this.currentAmmo === 0) {
               this._isBursting = false;
-              // Optional: Add a longer delay here for "between bursts"
-              this.lastFireTime = now;
+              // Add the burst delay to lastFireTime
+              // This ensures canFire() returns false for (fireInterval + burstDelay) ms
+              this.lastFireTime = Date.now() + this.burstDelay;
             }
           }
         }

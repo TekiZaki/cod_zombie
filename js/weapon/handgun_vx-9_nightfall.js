@@ -37,6 +37,7 @@ export class HandgunVX9Nightfall extends WeaponBase {
       fireMode: "semi", // semi, burst, auto
       availableFireModes: ["semi", "burst"],
       burstCount: 3, // comment this if not burst
+      burstDelay: 450, // ms delay between bursts
 
       // Special Effects
       specialEffects: [
