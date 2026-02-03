@@ -8,13 +8,31 @@ export class ZombieManager {
     this.zombies = [];
   }
 
-  spawnZombies(canvasWidth, canvasHeight, wave) {
+  spawnZombies(worldWidth, worldHeight, wave) {
     const count = ZOMBIE_BASE_COUNT + wave * ZOMBIE_COUNT_PER_WAVE;
     this.zombies = [];
     for (let i = 0; i < count; i++) {
-      const side = Math.random() > 0.5 ? "left" : "right";
-      const x = side === "left" ? -20 : canvasWidth + 20;
-      const y = Math.random() * (canvasHeight - 100);
+      const edge = Math.floor(Math.random() * 4); // 0: top, 1: right, 2: bottom, 3: left
+      let x, y;
+
+      switch (edge) {
+        case 0: // Top
+          x = Math.random() * worldWidth;
+          y = -50;
+          break;
+        case 1: // Right
+          x = worldWidth + 50;
+          y = Math.random() * worldHeight;
+          break;
+        case 2: // Bottom
+          x = Math.random() * worldWidth;
+          y = worldHeight + 50;
+          break;
+        case 3: // Left
+          x = -50;
+          y = Math.random() * worldHeight;
+          break;
+      }
       this.zombies.push(new Zombie(x, y, wave));
     }
   }

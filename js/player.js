@@ -8,9 +8,9 @@ import {
 } from "./constants.js";
 
 export class Player {
-  constructor(canvasWidth, canvasHeight) {
-    this.x = canvasWidth / 2;
-    this.y = canvasHeight - 50;
+  constructor(worldWidth, worldHeight) {
+    this.x = worldWidth / 2;
+    this.y = worldHeight / 2;
     this.width = PLAYER_WIDTH;
     this.height = PLAYER_HEIGHT;
     this.speed = PLAYER_SPEED;
@@ -38,17 +38,17 @@ export class Player {
     this.angle = Math.atan2(dy, dx);
   }
 
-  update(canvasWidth, canvasHeight) {
+  update(worldWidth, worldHeight) {
     if (this.moveLeft && this.x > 0) this.x -= this.speed;
-    if (this.moveRight && this.x < canvasWidth - this.width)
+    if (this.moveRight && this.x < worldWidth - this.width)
       this.x += this.speed;
     if (this.moveUp && this.y > 0) this.y -= this.speed;
-    if (this.moveDown && this.y < canvasHeight - this.height)
+    if (this.moveDown && this.y < worldHeight - this.height)
       this.y += this.speed;
   }
 
-  resetPosition(canvasWidth, canvasHeight) {
-    this.x = canvasWidth / 2;
-    this.y = canvasHeight - 50;
+  resetPosition(worldWidth, worldHeight) {
+    this.x = worldWidth / 2;
+    this.y = worldHeight / 2;
   }
 }

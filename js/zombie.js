@@ -22,7 +22,7 @@ export class Zombie {
     this.vy = 0;
     this.ax = 0;
     this.ay = 0;
-    this.maxForce = 0.2; // Limits the steering force (turning capability)
+    this.maxForce = 0.4; // Limits the steering force (turning capability)
   }
 
   update(playerX, playerY, obstacles, zombies) {

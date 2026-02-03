@@ -19,8 +19,8 @@ export class InputHandler {
 
     this.game.canvas.addEventListener("mousemove", (e) => {
       const rect = this.game.canvas.getBoundingClientRect();
-      const mouseX = e.clientX - rect.left;
-      const mouseY = e.clientY - rect.top;
+      const mouseX = e.clientX - rect.left + this.game.camera.x;
+      const mouseY = e.clientY - rect.top + this.game.camera.y;
       this.player.updateRotation(mouseX, mouseY);
     });
   }
@@ -58,8 +58,8 @@ export class InputHandler {
   handleMouseDown(e) {
     if (this.game.isGameOver || this.game.isPaused) return;
     const rect = this.game.canvas.getBoundingClientRect();
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
+    const mouseX = e.clientX - rect.left + this.game.camera.x;
+    const mouseY = e.clientY - rect.top + this.game.camera.y;
     this.weaponManager.startFiring(mouseX, mouseY);
   }
 

@@ -3,9 +3,12 @@
 export const GAME_CANVAS_ID = "gameCanvas";
 export const GAME_CONTAINER_ID = "gameContainer";
 
+export const WORLD_WIDTH = 2000;
+export const WORLD_HEIGHT = 2000;
+
 export const PLAYER_WIDTH = 30;
 export const PLAYER_HEIGHT = 40;
-export const PLAYER_SPEED = 6;
+export const PLAYER_SPEED = 8;
 export const PLAYER_INITIAL_HEALTH = 100;
 export const PLAYER_MAX_AMMO = 30;
 
@@ -15,10 +18,10 @@ export const BULLET_HEIGHT = 10;
 
 export const ZOMBIE_WIDTH = 25;
 export const ZOMBIE_HEIGHT = 35;
-export const ZOMBIE_INITIAL_SPEED_MULTIPLIER = 0.4;
+export const ZOMBIE_INITIAL_SPEED_MULTIPLIER = 0.6;
 export const ZOMBIE_INITIAL_HEALTH_MULTIPLIER = 8; // Reduced from 15 to 8
-export const ZOMBIE_BASE_COUNT = 6;
-export const ZOMBIE_COUNT_PER_WAVE = 4;
+export const ZOMBIE_BASE_COUNT = 10;
+export const ZOMBIE_COUNT_PER_WAVE = 6;
 
 export const POINTS_PER_HIT = 2;
 export const POINTS_PER_KILL = 20;

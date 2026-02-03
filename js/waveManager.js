@@ -1,4 +1,5 @@
 // cod_zombie/js/waveManager.js
+import { WORLD_WIDTH, WORLD_HEIGHT } from "./constants.js";
 
 export class WaveManager {
   constructor() {
@@ -37,8 +38,8 @@ export class WaveManager {
 
     // Regenerate Map
     game.mapManager.generateMap(
-      game.canvas.width,
-      game.canvas.height,
+      WORLD_WIDTH,
+      WORLD_HEIGHT,
       game.player.x,
       game.player.y,
     );
@@ -51,8 +52,8 @@ export class WaveManager {
     }
 
     zombieManager.spawnZombies(
-      game.canvas.width,
-      game.canvas.height,
+      WORLD_WIDTH,
+      WORLD_HEIGHT,
       game.wave,
     );
 

@@ -11,16 +11,16 @@ export class BulletManager {
     this.bullets.push(new Bullet(startX, startY, targetX, targetY, weaponData));
   }
 
-  update(canvasWidth, canvasHeight) {
+  update(worldWidth, worldHeight) {
     for (let i = this.bullets.length - 1; i >= 0; i--) {
       const bullet = this.bullets[i];
       bullet.update();
 
       if (
         bullet.y < 0 ||
-        bullet.y > canvasHeight ||
+        bullet.y > worldHeight ||
         bullet.x < 0 ||
-        bullet.x > canvasWidth
+        bullet.x > worldWidth
       ) {
         this.bullets.splice(i, 1);
       }

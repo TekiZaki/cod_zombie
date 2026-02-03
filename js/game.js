@@ -20,6 +20,8 @@ import {
   GAME_CONTAINER_ID,
   PLAYER_INITIAL_HEALTH,
   PLAYER_MAX_AMMO,
+  WORLD_WIDTH,
+  WORLD_HEIGHT,
 } from "./constants.js";
 
 export class Game {
@@ -40,7 +42,9 @@ export class Game {
     this.ctx = this.canvas.getContext("2d");
     this.gameContainer = document.getElementById(GAME_CONTAINER_ID);
 
-    this.player = new Player(this.canvas.width, this.canvas.height);
+    this.camera = { x: 0, y: 0 };
+
+    this.player = new Player(WORLD_WIDTH, WORLD_HEIGHT);
     this.bulletManager = new BulletManager();
     this.zombieManager = new ZombieManager();
     this.collisionDetector = new CollisionDetector();
@@ -92,20 +96,19 @@ export class Game {
   resizeCanvas() {
     this.canvas.width = this.gameContainer.clientWidth;
     this.canvas.height = this.gameContainer.clientHeight;
-    this.player.resetPosition(this.canvas.width, this.canvas.height);
   }
 
   initGame() {
-    this.player.resetPosition(this.canvas.width, this.canvas.height);
+    this.player.resetPosition(WORLD_WIDTH, WORLD_HEIGHT);
     this.mapManager.generateMap(
-      this.canvas.width,
-      this.canvas.height,
+      WORLD_WIDTH,
+      WORLD_HEIGHT,
       this.player.x,
       this.player.y,
     );
     this.zombieManager.spawnZombies(
-      this.canvas.width,
-      this.canvas.height,
+      WORLD_WIDTH,
+      WORLD_HEIGHT,
       this.wave,
     );
     
@@ -157,7 +160,15 @@ export class Game {
       }
     }
 
-    this.player.update(this.canvas.width, this.canvas.height);
+    this.player.update(WORLD_WIDTH, WORLD_HEIGHT);
+
+    // Update camera
+    this.camera.x = this.player.x + this.player.width / 2 - this.canvas.width / 2;
+    this.camera.y = this.player.y + this.player.height / 2 - this.canvas.height / 2;
+
+    // Optional: Clamp camera to world boundaries
+    this.camera.x = Math.max(0, Math.min(this.camera.x, WORLD_WIDTH - this.canvas.width));
+    this.camera.y = Math.max(0, Math.min(this.camera.y, WORLD_HEIGHT - this.canvas.height));
 
     const fireDataArray = this.weaponManager.update();
     if (fireDataArray) {
@@ -175,7 +186,7 @@ export class Game {
       });
     }
 
-    this.bulletManager.update(this.canvas.width, this.canvas.height);
+    this.bulletManager.update(WORLD_WIDTH, WORLD_HEIGHT);
     this.zombieManager.update(this.player.x, this.player.y, this.mapManager.obstacles);
 
     // Obstacle collisions
@@ -208,10 +219,17 @@ export class Game {
 
     // Draw
     this.renderer.clearCanvas(this.canvas.width, this.canvas.height);
+
+    this.ctx.save();
+    this.ctx.translate(-this.camera.x, -this.camera.y);
+
+    this.renderer.drawWorldBoundary(WORLD_WIDTH, WORLD_HEIGHT);
     this.renderer.drawObstacles(this.mapManager.obstacles);
     this.renderer.drawPlayer(this.player);
     this.renderer.drawBullets(this.bulletManager.bullets, this.bulletImage);
     this.renderer.drawZombies(this.zombieManager.zombies, nearestZombie);
+
+    this.ctx.restore();
 
     // Update UI
     this.uiManager.updateUI(this);
@@ -238,7 +256,7 @@ export class Game {
 
     this.bulletManager.clear();
     this.zombieManager.clear();
-    this.player.resetPosition(this.canvas.width, this.canvas.height);
+    this.player.resetPosition(WORLD_WIDTH, WORLD_HEIGHT);
     this.uiManager.hideGameOver();
     this.initGame();
   }

@@ -3,7 +3,7 @@
 export class MapManager {
   constructor() {
     this.obstacles = [];
-    this.obstacleCount = 10;
+    this.obstacleCount = 45;
     this.minSize = 50;
     this.maxSize = 150;
   }

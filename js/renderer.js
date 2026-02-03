@@ -12,6 +12,31 @@ export class Renderer {
     this.ctx.fillRect(0, 0, width, height);
   }
 
+  drawWorldBoundary(worldWidth, worldHeight) {
+    this.ctx.strokeStyle = "#1e293b";
+    this.ctx.lineWidth = 5;
+    this.ctx.strokeRect(0, 0, worldWidth, worldHeight);
+
+    // Draw grid
+    this.ctx.strokeStyle = "rgba(255, 255, 255, 0.03)";
+    this.ctx.lineWidth = 1;
+    const gridSize = 100;
+    
+    for (let x = 0; x <= worldWidth; x += gridSize) {
+      this.ctx.beginPath();
+      this.ctx.moveTo(x, 0);
+      this.ctx.lineTo(x, worldHeight);
+      this.ctx.stroke();
+    }
+    
+    for (let y = 0; y <= worldHeight; y += gridSize) {
+      this.ctx.beginPath();
+      this.ctx.moveTo(0, y);
+      this.ctx.lineTo(worldWidth, y);
+      this.ctx.stroke();
+    }
+  }
+
   drawPlayer(player) {
     this.ctx.save();
 
