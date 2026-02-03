@@ -22,9 +22,13 @@ export class CollisionDetector {
           ) {
             let damage = bullet.damage;
             
-            // Critical Chance (Double Damage)
+            // Critical Chance (Extra Damage)
             if (game.modifiers.critChance && Math.random() < game.modifiers.critChance) {
                 damage *= 2;
+                // Bounty Hunter Bonus
+                if (game.modifiers.critBonusPoints) {
+                    game.points += game.modifiers.critBonusPoints;
+                }
             }
 
             zombie.health -= damage;

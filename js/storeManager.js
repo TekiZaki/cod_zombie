@@ -51,12 +51,24 @@ export class StoreManager {
   }
 
   generateChoices() {
-    // Filter out weapon unlocks if already owned
     const availableUpgrades = UPGRADES.filter(u => {
+        // Filter out weapon unlocks if already owned
         if (u.category === "weapon_unlock") {
             const hasWeapon = this.game.weaponManager.weapons.some(w => w instanceof AssaultRifleARC7Vanguard);
             return !hasWeapon;
         }
+
+        // 1. If we already have THIS specific upgrade, don't show it again
+        if (this.appliedUpgrades.some(applied => applied.id === u.id)) return false;
+
+        // 2. If it has a requirement, check if we have it
+        if (u.requiredId && !this.appliedUpgrades.some(applied => applied.id === u.requiredId)) return false;
+
+        // 3. If it's a leveled upgrade (Level > 1) and we don't have the prerequisite, it was handled above.
+        // If it's Level 1, it should show up. 
+        // We also want to avoid showing Level 2 if Level 1 is available but not yet bought.
+        // Actually, the above logic handles this if Level 2 has requiredId: Level 1.
+
         return true;
     });
 

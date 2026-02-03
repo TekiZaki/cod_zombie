@@ -20,16 +20,21 @@ export const UPGRADES = [
   category: "player",
   type: "add",
   stat: "maxHealth",
-  value: 25
+  value: 25,
+  cost: 400,
+  level: 1
 },
 {
   id: "vitality_2",
   name: "Vitality II",
-  description: "Increase Max Health by +50.",
+  description: "Increase Max Health by another +50.",
   category: "player",
   type: "add",
   stat: "maxHealth",
-  value: 50
+  value: 50,
+  cost: 800,
+  level: 2,
+  requiredId: "vitality_1"
 },
 {
   id: "juggernaut_1",
@@ -38,16 +43,21 @@ export const UPGRADES = [
   category: "player",
   type: "multiply",
   stat: "damageReduction",
-  value: 0.9
+  value: 0.9,
+  cost: 500,
+  level: 1
 },
 {
   id: "juggernaut_2",
   name: "Juggernaut II",
-  description: "Reduce incoming damage by 20%.",
+  description: "Reduce incoming damage by another 10% (stacking).",
   category: "player",
   type: "multiply",
   stat: "damageReduction",
-  value: 0.8
+  value: 0.9,
+  cost: 1000,
+  level: 2,
+  requiredId: "juggernaut_1"
 },
 {
   id: "regeneration",
@@ -56,7 +66,8 @@ export const UPGRADES = [
   category: "utility",
   type: "special",
   stat: "regen",
-  value: 1
+  value: 1,
+  cost: 600
 },
 
 /* ================= PLAYER – MOBILITY ================= */
@@ -67,16 +78,21 @@ export const UPGRADES = [
   category: "player",
   type: "multiply",
   stat: "speed",
-  value: 1.1
+  value: 1.1,
+  cost: 300,
+  level: 1
 },
 {
   id: "lightweight_2",
   name: "Lightweight II",
-  description: "Increase movement speed by 20%.",
+  description: "Increase movement speed by another 10%.",
   category: "player",
   type: "multiply",
   stat: "speed",
-  value: 1.2
+  value: 1.1,
+  cost: 600,
+  level: 2,
+  requiredId: "lightweight_1"
 },
 {
   id: "adrenaline",
@@ -85,7 +101,8 @@ export const UPGRADES = [
   category: "utility",
   type: "special",
   stat: "lowHpSpeed",
-  value: 1.3
+  value: 1.3,
+  cost: 500
 },
 
 /* ================= WEAPON – DAMAGE ================= */
@@ -96,25 +113,58 @@ export const UPGRADES = [
   category: "weapon",
   type: "multiply",
   stat: "baseDamage",
-  value: 1.15
+  value: 1.15,
+  cost: 450,
+  level: 1
 },
 {
   id: "damage_boost_2",
   name: "Hollow Point II",
-  description: "Increase weapon damage by 30%.",
+  description: "Increase weapon damage by another 15%.",
   category: "weapon",
   type: "multiply",
   stat: "baseDamage",
-  value: 1.3
+  value: 1.15,
+  cost: 900,
+  level: 2,
+  requiredId: "damage_boost_1"
+},
+
+/* ================= WEAPON – PRECISION (CRITS) ================= */
+{
+  id: "deadshot_1",
+  name: "Deadshot I",
+  description: "15% chance to deal 2x critical damage.",
+  category: "utility",
+  type: "special",
+  stat: "critChance",
+  value: 0.15,
+  cost: 500,
+  level: 1
 },
 {
-  id: "headshot_master",
-  name: "Headshot Master",
-  description: "Increase headshot multiplier by 25%.",
-  category: "weapon",
-  type: "multiply",
-  stat: "headshotMultiplier",
-  value: 1.25
+  id: "deadshot_2",
+  name: "Deadshot II",
+  description: "Increase critical chance by another 15%.",
+  category: "utility",
+  type: "special",
+  stat: "critChance",
+  value: 0.15,
+  cost: 1000,
+  level: 2,
+  requiredId: "deadshot_1"
+},
+{
+  id: "deadshot_3",
+  name: "Deadshot III",
+  description: "Increase critical chance by another 15% (Total 45%).",
+  category: "utility",
+  type: "special",
+  stat: "critChance",
+  value: 0.15,
+  cost: 1500,
+  level: 3,
+  requiredId: "deadshot_2"
 },
 
 /* ================= WEAPON – FIRE RATE ================= */
@@ -125,16 +175,21 @@ export const UPGRADES = [
   category: "weapon",
   type: "multiply",
   stat: "fireRate",
-  value: 1.15
+  value: 1.15,
+  cost: 500,
+  level: 1
 },
 {
   id: "rapid_fire_2",
   name: "Rapid Fire II",
-  description: "Increase fire rate by 30%.",
+  description: "Increase fire rate by another 15%.",
   category: "weapon",
   type: "multiply",
   stat: "fireRate",
-  value: 1.3
+  value: 1.15,
+  cost: 1000,
+  level: 2,
+  requiredId: "rapid_fire_1"
 },
 
 /* ================= WEAPON – AMMO ================= */
@@ -145,16 +200,21 @@ export const UPGRADES = [
   category: "weapon",
   type: "multiply",
   stat: "magazineCapacity",
-  value: 1.25
+  value: 1.25,
+  cost: 400,
+  level: 1
 },
 {
   id: "extended_mags_2",
   name: "Extended Mags II",
-  description: "Increase magazine capacity by 50%.",
+  description: "Increase magazine capacity by another 25%.",
   category: "weapon",
   type: "multiply",
   stat: "magazineCapacity",
-  value: 1.5
+  value: 1.25,
+  cost: 800,
+  level: 2,
+  requiredId: "extended_mags_1"
 },
 {
   id: "scavenger",
@@ -163,7 +223,8 @@ export const UPGRADES = [
   category: "utility",
   type: "special",
   stat: "healOnKill",
-  value: 5
+  value: 5,
+  cost: 700
 },
 {
   id: "ammo_surplus",
@@ -172,28 +233,11 @@ export const UPGRADES = [
   category: "utility",
   type: "special",
   stat: "ammoBonus",
-  value: 0.5
+  value: 0.5,
+  cost: 500
 },
 
-/* ================= CRITICAL & SPECIAL ================= */
-{
-  id: "double_tap_1",
-  name: "Double Tap I",
-  description: "10% chance to deal 2x damage.",
-  category: "utility",
-  type: "special",
-  stat: "critChance",
-  value: 0.1
-},
-{
-  id: "double_tap_2",
-  name: "Double Tap II",
-  description: "20% chance to deal 2x damage.",
-  category: "utility",
-  type: "special",
-  stat: "critChance",
-  value: 0.2
-},
+/* ================= SPECIAL UTILITY ================= */
 {
   id: "executioner",
   name: "Executioner",
@@ -201,10 +245,9 @@ export const UPGRADES = [
   category: "utility",
   type: "special",
   stat: "executeBonus",
-  value: 1.5
+  value: 1.5,
+  cost: 800
 },
-
-/* ================= DEFENSIVE UTILITY ================= */
 {
   id: "thick_skin",
   name: "Thick Skin",
@@ -212,7 +255,8 @@ export const UPGRADES = [
   category: "player",
   type: "multiply",
   stat: "damageReduction",
-  value: 0.7
+  value: 0.7,
+  cost: 600
 },
 {
   id: "second_wind",
@@ -221,7 +265,8 @@ export const UPGRADES = [
   category: "utility",
   type: "special",
   stat: "secondWind",
-  value: 20
+  value: 20,
+  cost: 1200
 },
 
 /* ================= ECONOMY ================= */
@@ -232,16 +277,18 @@ export const UPGRADES = [
   category: "utility",
   type: "special",
   stat: "pointBonus",
-  value: 1.25
+  value: 1.25,
+  cost: 600
 },
 {
-  id: "headhunter",
-  name: "Headhunter",
-  description: "Headshots give +10 extra points.",
+  id: "bounty_hunter",
+  name: "Bounty Hunter",
+  description: "Every critical hit gives +10 extra points.",
   category: "utility",
   type: "special",
-  stat: "headshotPoints",
-  value: 10
+  stat: "critBonusPoints",
+  value: 10,
+  cost: 700
 },
 
 /* ================= FINAL CHAOS ================= */
@@ -252,7 +299,8 @@ export const UPGRADES = [
   category: "utility",
   type: "special",
   stat: "berserk",
-  value: { damage: 1.4, taken: 1.2 }
+  value: { damage: 1.4, taken: 1.2 },
+  cost: 1500
 },
 {
   id: "unstoppable",
@@ -261,6 +309,7 @@ export const UPGRADES = [
   category: "utility",
   type: "special",
   stat: "knockbackImmune",
-  value: true
+  value: true,
+  cost: 2000
 }
 ];
