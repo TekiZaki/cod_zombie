@@ -34,7 +34,7 @@ export class UIManager {
 
       const maxAmmoElement = document.getElementById("maxAmmo");
       if (maxAmmoElement) {
-        maxAmmoElement.textContent = weaponInfo.magazineCapacity;
+        maxAmmoElement.textContent = "∞";
       }
 
       if (fireModeElement) {

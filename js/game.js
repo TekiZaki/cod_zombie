@@ -34,9 +34,10 @@ export class Game {
     this.isPaused = false;
     this.modifiers = {
         healOnKill: 0,
-        ammoBonus: 0,
-        critChance: 0
+        critChance: 0,
+        regen: 0
     };
+    this.lastRegenTime = 0;
 
     this.canvas = document.getElementById(GAME_CANVAS_ID);
     this.ctx = this.canvas.getContext("2d");
@@ -162,6 +163,17 @@ export class Game {
 
     this.player.update(WORLD_WIDTH, WORLD_HEIGHT);
 
+    // Health Regeneration
+    if (this.modifiers.regen > 0) {
+      const now = Date.now();
+      if (now - this.lastRegenTime >= 1000) {
+        if (this.health < this.player.maxHealth) {
+          this.health = Math.min(this.player.maxHealth, this.health + this.modifiers.regen);
+        }
+        this.lastRegenTime = now;
+      }
+    }
+
     // Update camera
     this.camera.x = this.player.x + this.player.width / 2 - this.canvas.width / 2;
     this.camera.y = this.player.y + this.player.height / 2 - this.canvas.height / 2;
@@ -245,14 +257,14 @@ export class Game {
     this.kills = 0;
     this.points = 0;
     this.health = PLAYER_INITIAL_HEALTH;
-    this.ammo = PLAYER_MAX_AMMO;
     this.isGameOver = false;
     this.isPaused = false;
     this.modifiers = {
         healOnKill: 0,
-        ammoBonus: 0,
-        critChance: 0
+        critChance: 0,
+        regen: 0
     };
+    this.lastRegenTime = 0;
 
     this.bulletManager.clear();
     this.zombieManager.clear();

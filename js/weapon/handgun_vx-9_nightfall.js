@@ -23,14 +23,12 @@ export class HandgunVX9Nightfall extends WeaponBase {
 
       // Ammo & Reload
       magazineCapacity: 15,
-      maxAmmo: 120,
       reloadTime: 1.2, // seconds
       emptyReloadTime: 1.6, // seconds
 
       // Handling & Accuracy
       recoil: "Low",
-      hipFireAccuracy: 0.78,
-      adsAccuracy: 0.92,
+      accuracy: 0.78,
       movementPenalty: -0.05,
       drawTime: 0.35, // seconds
 

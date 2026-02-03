@@ -23,14 +23,12 @@ export class AssaultRifleARC7Vanguard extends WeaponBase {
 
       // Ammo & Reload
       magazineCapacity: 30,
-      maxAmmo: 210,
       reloadTime: 1.8,
       emptyReloadTime: 2.4,
 
       // Handling & Accuracy
       recoil: "Medium",
-      hipFireAccuracy: 0.65,
-      adsAccuracy: 0.88,
+      accuracy: 0.65,
       movementPenalty: -0.12,
       drawTime: 0.5,
 

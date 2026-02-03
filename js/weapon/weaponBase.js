@@ -19,16 +19,13 @@ export class WeaponBase {
 
     // Ammo & Reload
     this.magazineCapacity = config.magazineCapacity;
-    this.maxAmmo = config.maxAmmo;
     this.currentAmmo = config.magazineCapacity;
-    this.reserveAmmo = config.maxAmmo - config.magazineCapacity;
     this.reloadTime = config.reloadTime;
     this.emptyReloadTime = config.emptyReloadTime;
 
     // Handling
     this.recoil = config.recoil;
-    this.hipFireAccuracy = config.hipFireAccuracy;
-    this.adsAccuracy = config.adsAccuracy;
+    this.accuracy = config.accuracy;
     this.movementPenalty = config.movementPenalty;
     this.drawTime = config.drawTime;
 
@@ -44,7 +41,6 @@ export class WeaponBase {
     // Internal State
     this.isReloading = false;
     this.lastFireTime = 0;
-    this.isADS = false; // aim down sights
 
     // Fire Mode State
     this.isFiring = false;
@@ -111,7 +107,7 @@ export class WeaponBase {
     return {
       damage: this.baseDamage,
       speed: this.bulletSpeed,
-      accuracy: this.isADS ? this.adsAccuracy : this.hipFireAccuracy,
+      accuracy: this.accuracy,
       target: this._target,
     };
   }
@@ -165,7 +161,6 @@ export class WeaponBase {
   reload() {
     if (
       this.isReloading ||
-      this.reserveAmmo <= 0 ||
       this.currentAmmo === this.magazineCapacity
     )
       return false;
@@ -180,11 +175,7 @@ export class WeaponBase {
     this.playReloadSound(reloadDuration);
 
     setTimeout(() => {
-      const ammoNeeded = this.magazineCapacity - this.currentAmmo;
-      const ammoToReload = Math.min(ammoNeeded, this.reserveAmmo);
-
-      this.currentAmmo += ammoToReload;
-      this.reserveAmmo -= ammoToReload;
+      this.currentAmmo = this.magazineCapacity;
       this.isReloading = false;
     }, reloadDuration * 1000);
 
@@ -228,7 +219,6 @@ export class WeaponBase {
       name: this.name,
       type: this.type,
       currentAmmo: this.currentAmmo,
-      reserveAmmo: this.reserveAmmo,
       magazineCapacity: this.magazineCapacity,
       fireMode: this.fireMode,
     };

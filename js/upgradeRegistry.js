@@ -226,17 +226,6 @@ export const UPGRADES = [
   value: 5,
   cost: 700
 },
-{
-  id: "ammo_surplus",
-  name: "Ammo Surplus",
-  description: "Gain +50% reserve ammo each wave.",
-  category: "utility",
-  type: "special",
-  stat: "ammoBonus",
-  value: 0.5,
-  cost: 500
-},
-
 /* ================= SPECIAL UTILITY ================= */
 {
   id: "executioner",

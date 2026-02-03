@@ -44,13 +44,6 @@ export class WaveManager {
       game.player.y,
     );
 
-    // Optional: Refill ammo on new round like COD (or keep as is)
-    const weapon = game.weaponManager.getCurrentWeapon();
-    if (weapon) {
-      const bonusMultiplier = 1 + (game.modifiers.ammoBonus || 0);
-      weapon.reserveAmmo = Math.round((weapon.maxAmmo - weapon.magazineCapacity) * bonusMultiplier);
-    }
-
     zombieManager.spawnZombies(
       WORLD_WIDTH,
       WORLD_HEIGHT,
