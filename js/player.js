@@ -23,6 +23,8 @@ export class Player {
 
     // Add this to the constructor in player.js
     this.angle = 0;
+    this.velocity = { x: 0, y: 0 };
+    this.friction = 0.9; // Slows down velocity
   }
 
   // Add this method to update the angle based on mouse coordinates
@@ -39,12 +41,24 @@ export class Player {
   }
 
   update(worldWidth, worldHeight) {
+    // Apply velocity (from knockback)
+    this.x += this.velocity.x;
+    this.y += this.velocity.y;
+
+    // Apply friction
+    this.velocity.x *= this.friction;
+    this.velocity.y *= this.friction;
+
     if (this.moveLeft && this.x > 0) this.x -= this.speed;
     if (this.moveRight && this.x < worldWidth - this.width)
       this.x += this.speed;
     if (this.moveUp && this.y > 0) this.y -= this.speed;
     if (this.moveDown && this.y < worldHeight - this.height)
       this.y += this.speed;
+    
+    // Boundary checks (in case knockback pushed player out)
+    this.x = Math.max(0, Math.min(this.x, worldWidth - this.width));
+    this.y = Math.max(0, Math.min(this.y, worldHeight - this.height));
   }
 
   resetPosition(worldWidth, worldHeight) {

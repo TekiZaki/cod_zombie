@@ -2,15 +2,16 @@
 
 import { Zombie } from "./zombie.js";
 import { Boss } from "./boss.js";
-import { ZOMBIE_BASE_COUNT, ZOMBIE_COUNT_PER_WAVE } from "./constants.js";
+import { ZOMBIE_BASE_COUNT, ZOMBIE_COUNT_PER_WAVE, ZOMBIE_WIDTH, ZOMBIE_HEIGHT } from "./constants.js";
 
 export class ZombieManager {
   constructor() {
     this.zombies = [];
   }
 
-  spawnZombies(worldWidth, worldHeight, wave, isBossWave = false) {
+  spawnZombies(worldWidth, worldHeight, wave, game, isBossWave = false) {
     this.zombies = [];
+    this.game = game;
 
     if (isBossWave) {
       this.spawnBoss(worldWidth, worldHeight, wave);
@@ -20,21 +21,52 @@ export class ZombieManager {
         this.spawnRegularZombie(worldWidth, worldHeight, wave);
       }
     } else {
-      const count = ZOMBIE_BASE_COUNT + wave * ZOMBIE_COUNT_PER_WAVE;
-      for (let i = 0; i < count; i++) {
+      // Regular wave logic
+      const totalCount = ZOMBIE_BASE_COUNT + wave * ZOMBIE_COUNT_PER_WAVE;
+      
+      // Heavy zombies starting wave 3
+      let heavyCount = 0;
+      if (wave >= 3) {
+        heavyCount = Math.floor(wave / 3) + Math.floor(Math.random() * (wave / 2));
+      }
+      
+      const regularCount = Math.max(0, totalCount - heavyCount);
+      
+      for (let i = 0; i < regularCount; i++) {
         this.spawnRegularZombie(worldWidth, worldHeight, wave);
+      }
+      
+      for (let i = 0; i < heavyCount; i++) {
+        this.spawnHeavyZombie(worldWidth, worldHeight, wave);
       }
     }
   }
 
   spawnRegularZombie(worldWidth, worldHeight, wave) {
     const { x, y } = this.getRandomEdgePosition(worldWidth, worldHeight);
-    this.zombies.push(new Zombie(x, y, wave));
+    const zombie = new Zombie(x, y, wave);
+    zombie.setGame(this.game);
+    this.zombies.push(zombie);
+  }
+
+  spawnHeavyZombie(worldWidth, worldHeight, wave) {
+    const { x, y } = this.getRandomEdgePosition(worldWidth, worldHeight);
+    const zombie = new Zombie(x, y, wave);
+    zombie.type = 'heavy';
+    zombie.width = ZOMBIE_WIDTH * 2.5;
+    zombie.height = ZOMBIE_HEIGHT * 2.5;
+    zombie.maxHealth *= 8; // 8x normal health
+    zombie.health = zombie.maxHealth;
+    zombie.maxSpeed *= 0.9; // 10% slower but much faster than before
+    zombie.setGame(this.game);
+    this.zombies.push(zombie);
   }
 
   spawnBoss(worldWidth, worldHeight, wave) {
     const { x, y } = this.getRandomEdgePosition(worldWidth, worldHeight);
-    this.zombies.push(new Boss(x, y, wave));
+    const boss = new Boss(x, y, wave);
+    boss.setGame(this.game);
+    this.zombies.push(boss);
   }
 
   getRandomEdgePosition(worldWidth, worldHeight) {

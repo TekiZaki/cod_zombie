@@ -89,17 +89,24 @@ export class Renderer {
     }
   }
 
-  drawZombies(zombies, nearestZombie = null) {
+  drawZombies(zombies, nearestZombie = null, bossImage = null, heavyImage = null) {
     for (let zombie of zombies) {
-      this.ctx.fillStyle = zombie.isBoss ? "#4a0404" : COLORS.zombie;
-      this.ctx.fillRect(zombie.x, zombie.y, zombie.width, zombie.height);
+      if (zombie.isBoss && bossImage && bossImage.complete) {
+        this.ctx.drawImage(bossImage, zombie.x, zombie.y, zombie.width, zombie.height);
+      } else if (zombie.type === 'heavy' && heavyImage && heavyImage.complete) {
+        this.ctx.drawImage(heavyImage, zombie.x, zombie.y, zombie.width, zombie.height);
+      } else {
+        // Fallback or regular zombie
+        this.ctx.fillStyle = zombie.isBoss ? "#4a0404" : (zombie.type === 'heavy' ? '#880000' : COLORS.zombie);
+        this.ctx.fillRect(zombie.x, zombie.y, zombie.width, zombie.height);
 
-      // Eyes
-      this.ctx.fillStyle = COLORS.zombieEye;
-      const eyeSize = zombie.isBoss ? 15 : 5;
-      const eyeOffset = zombie.isBoss ? 15 : 5;
-      this.ctx.fillRect(zombie.x + eyeOffset, zombie.y + eyeOffset * 2, eyeSize, eyeSize);
-      this.ctx.fillRect(zombie.x + zombie.width - eyeOffset - eyeSize, zombie.y + eyeOffset * 2, eyeSize, eyeSize);
+        // Eyes
+        this.ctx.fillStyle = COLORS.zombieEye;
+        const eyeSize = zombie.isBoss ? 15 : (zombie.type === 'heavy' ? 8 : 5);
+        const eyeOffset = zombie.isBoss ? 15 : (zombie.type === 'heavy' ? 8 : 5);
+        this.ctx.fillRect(zombie.x + eyeOffset, zombie.y + eyeOffset * 2, eyeSize, eyeSize);
+        this.ctx.fillRect(zombie.x + zombie.width - eyeOffset - eyeSize, zombie.y + eyeOffset * 2, eyeSize, eyeSize);
+      }
 
       // Zombie Health Bar
       this.drawZombieHealthBar(zombie);

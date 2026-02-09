@@ -15,6 +15,7 @@ import { UIManager } from "./uiManager.js";
 import { InputHandler } from "./inputHandler.js";
 import { MapManager } from "./mapManager.js";
 import { StoreManager } from "./storeManager.js";
+import { SpecialAttackSystem } from "./zombie/specialAttack.js";
 import {
   GAME_CANVAS_ID,
   GAME_CONTAINER_ID,
@@ -54,6 +55,8 @@ export class Game {
     this.uiManager = new UIManager();
     this.mapManager = new MapManager();
     this.storeManager = new StoreManager(this);
+    this.specialAttackSystem = new SpecialAttackSystem(this);
+    this.screenShake = 0; // For impact effects
 
     document.getElementById("refreshBtn").addEventListener("click", () => {
         this.storeManager.refresh();
@@ -84,6 +87,12 @@ export class Game {
     this.bulletImage = new Image();
     this.bulletImage.src = "data:image/svg+xml;base64," + btoa(svgString);
 
+    this.bossImage = new Image();
+    this.bossImage.src = "assets/boss.svg";
+    
+    this.heavyImage = new Image();
+    this.heavyImage.src = "assets/heavy.svg";
+
     this.init();
   }
 
@@ -100,6 +109,7 @@ export class Game {
   }
 
   initGame() {
+    this.lastTime = 0;
     this.player.resetPosition(WORLD_WIDTH, WORLD_HEIGHT);
     this.mapManager.generateMap(
       WORLD_WIDTH,
@@ -111,13 +121,14 @@ export class Game {
       WORLD_WIDTH,
       WORLD_HEIGHT,
       this.wave,
+      this
     );
     
     // Ensure only one loop is running
     if (this.animationFrameId) {
         cancelAnimationFrame(this.animationFrameId);
     }
-    this.gameLoop();
+    this.animationFrameId = requestAnimationFrame(this.gameLoop.bind(this));
   }
 
   getWeaponInfo() {
@@ -125,11 +136,24 @@ export class Game {
     return weapon ? weapon.getInfo() : null;
   }
 
-  gameLoop() {
+  gameLoop(timestamp) {
     if (this.isGameOver || this.isPaused) return;
+
+    // Calculate DeltaTime
+    if (!this.lastTime) this.lastTime = timestamp;
+    const deltaTime = (timestamp - this.lastTime) / 1000;
+    this.lastTime = timestamp;
 
     // Use a local variable for the animation frame ID
     this.animationFrameId = requestAnimationFrame(this.gameLoop.bind(this));
+
+    // Update screen shake
+    if (this.screenShake > 0) {
+        this.screenShake -= deltaTime;
+    }
+
+    // Update special attacks
+    this.specialAttackSystem.update(deltaTime);
 
     // Find nearest zombie for auto-aim
     let nearestZombie = null;
@@ -233,13 +257,25 @@ export class Game {
     this.renderer.clearCanvas(this.canvas.width, this.canvas.height);
 
     this.ctx.save();
+    
+    // Apply screen shake
+    if (this.screenShake > 0) {
+        const shakeMagnitude = this.screenShake * 15;
+        const shakeX = (Math.random() - 0.5) * shakeMagnitude;
+        const shakeY = (Math.random() - 0.5) * shakeMagnitude;
+        this.ctx.translate(shakeX, shakeY);
+    }
+    
     this.ctx.translate(-this.camera.x, -this.camera.y);
 
     this.renderer.drawWorldBoundary(WORLD_WIDTH, WORLD_HEIGHT);
     this.renderer.drawObstacles(this.mapManager.obstacles);
     this.renderer.drawPlayer(this.player);
     this.renderer.drawBullets(this.bulletManager.bullets, this.bulletImage);
-    this.renderer.drawZombies(this.zombieManager.zombies, nearestZombie);
+    this.renderer.drawZombies(this.zombieManager.zombies, nearestZombie, this.bossImage, this.heavyImage);
+
+    // Draw special attacks on top
+    this.specialAttackSystem.draw(this.ctx);
 
     this.ctx.restore();
 
@@ -268,6 +304,7 @@ export class Game {
 
     this.bulletManager.clear();
     this.zombieManager.clear();
+    this.specialAttackSystem.attacks = [];
     this.player.resetPosition(WORLD_WIDTH, WORLD_HEIGHT);
     this.uiManager.hideGameOver();
     this.initGame();

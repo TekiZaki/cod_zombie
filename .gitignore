@@ -1,5 +1,7 @@
+.gitignore
 extracted.md
 git_local_rollback.bat
 /.agent
 llms.txt
 CODEBASE.md
+plan.md

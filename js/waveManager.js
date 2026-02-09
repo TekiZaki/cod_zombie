@@ -55,6 +55,7 @@ export class WaveManager {
       WORLD_WIDTH,
       WORLD_HEIGHT,
       game.wave,
+      game,
       isBossWave
     );
 

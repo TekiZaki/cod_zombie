@@ -23,9 +23,26 @@ export class Zombie {
     this.ax = 0;
     this.ay = 0;
     this.maxForce = 0.4; // Limits the steering force (turning capability)
+    this.type = 'regular';
+    this.lastSlamTime = 0;
+    this.isAttacking = false;
+  }
+
+  setGame(game) {
+    this.game = game;
   }
 
   update(playerX, playerY, obstacles, zombies) {
+    if (this.isAttacking) return; // Stop movement during attack
+
+    // Special zombie types can perform slam attacks
+    if (this.type === 'heavy' || this.isBoss) {
+      if (this.shouldPerformSlamAttack(playerX, playerY)) {
+        this.performSlamAttack();
+        return;
+      }
+    }
+
     // Reset acceleration
     this.ax = 0;
     this.ay = 0;
@@ -210,5 +227,42 @@ export class Zombie {
       }
     }
     return { x: 0, y: 0 };
+  }
+
+  shouldPerformSlamAttack(playerX, playerY) {
+    if (!this.game) return false;
+    
+    const now = Date.now();
+    const timeSinceLastSlam = (now - this.lastSlamTime) / 1000;
+    
+    // Cooldown: 5 seconds for heavy, 4 seconds for boss
+    const cooldown = this.isBoss ? 4 : 5;
+    if (this.lastSlamTime !== 0 && timeSinceLastSlam < cooldown) return false;
+    
+    const dx = this.x + this.width / 2 - playerX;
+    const dy = this.y + this.height / 2 - playerY;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    
+    // Trigger if player is within range (wider for boss)
+    const triggerRange = this.isBoss ? 300 : 200;
+    if (distance < triggerRange && Math.random() < 0.02) {
+      return true;
+    }
+    
+    return false;
+  }
+
+  performSlamAttack() {
+    this.lastSlamTime = Date.now();
+    this.game.specialAttackSystem.createSlamAttack(this);
+    
+    // Stop zombie movement during attack
+    this.isAttacking = true;
+    
+    // Total attack duration (warning + tracking + windup + impact + aftermath)
+    // 1.0 + 1.5 + 0.8 + 0.3 + 0.5 = 4.1s
+    setTimeout(() => {
+      this.isAttacking = false;
+    }, 4100);
   }
 }

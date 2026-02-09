@@ -12,14 +12,14 @@ export class Boss extends Zombie {
     super(x, y, wave);
     
     // Boss specific scaling
-    this.width = ZOMBIE_WIDTH * 3;
-    this.height = ZOMBIE_HEIGHT * 3;
+    this.width = ZOMBIE_WIDTH * 5;
+    this.height = ZOMBIE_HEIGHT * 5;
     
-    // Boss Stats: Slower but Tankier
-    this.maxHealth = (1 + wave * ZOMBIE_INITIAL_HEALTH_MULTIPLIER) * 15; // 15x normal health
+    // Boss Stats: Faster and much Tankier
+    this.maxHealth = (1 + wave * ZOMBIE_INITIAL_HEALTH_MULTIPLIER) * 45; // 45x normal health
     this.health = this.maxHealth;
-    this.maxSpeed = 1.2; // Constant slow speed
-    this.maxForce = 0.2; // Less agile
+    this.maxSpeed = 2.5; // Faster boss
+    this.maxForce = 0.3; // Slightly more agile
     
     this.isBoss = true;
   }
