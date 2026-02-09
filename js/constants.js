@@ -19,7 +19,7 @@ export const BULLET_HEIGHT = 10;
 export const ZOMBIE_WIDTH = 25;
 export const ZOMBIE_HEIGHT = 35;
 export const ZOMBIE_INITIAL_SPEED_MULTIPLIER = 0.6;
-export const ZOMBIE_INITIAL_HEALTH_MULTIPLIER = 8; // Reduced from 15 to 8
+export const ZOMBIE_INITIAL_HEALTH_MULTIPLIER = 5; // Reduced from 8 to 5 for better balance
 export const ZOMBIE_BASE_COUNT = 10;
 export const ZOMBIE_COUNT_PER_WAVE = 6;
 

@@ -127,6 +127,17 @@ export class StoreManager {
         if (stat === "arc7") {
             this.game.weaponManager.addWeapon(new AssaultRifleARC7Vanguard());
         }
+    } else if (category === "weapon_mod") {
+        if (type === "unlock_firemode" && stat === "auto") {
+            // Unlock auto fire mode for the pistol
+            this.game.weaponManager.weapons.forEach(weapon => {
+                if (weapon.name === 'VX-9 "Nightfall"') {
+                    if (!weapon.availableFireModes.includes("auto")) {
+                        weapon.availableFireModes.push("auto");
+                    }
+                }
+            });
+        }
     }
   }
 

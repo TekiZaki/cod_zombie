@@ -264,8 +264,33 @@ export class MobileControls {
     const utilityContainer = document.createElement('div');
     utilityContainer.style.cssText = `
       display: flex;
-      gap: 15px;
+      gap: 12px;
       margin-bottom: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      max-width: 200px;
+    `;
+    
+    // Fire mode button
+    const fireModeBtn = document.createElement('button');
+    fireModeBtn.id = 'mobileFireModeBtn';
+    fireModeBtn.className = 'mobile-btn mobile-firemode-btn';
+    fireModeBtn.innerHTML = 'B';
+    fireModeBtn.style.cssText = `
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(255, 180, 50, 0.4);
+      border: 2px solid rgba(255, 200, 70, 0.8);
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
     `;
     
     // Reload button
@@ -274,13 +299,13 @@ export class MobileControls {
     reloadBtn.className = 'mobile-btn mobile-reload-btn';
     reloadBtn.innerHTML = '🔄';
     reloadBtn.style.cssText = `
-      width: 56px;
-      height: 56px;
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
       background: rgba(100, 150, 255, 0.4);
       border: 2px solid rgba(120, 170, 255, 0.8);
       color: white;
-      font-size: 20px;
+      font-size: 18px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -295,13 +320,13 @@ export class MobileControls {
     switchBtn.className = 'mobile-btn mobile-switch-btn';
     switchBtn.innerHTML = '🔫';
     switchBtn.style.cssText = `
-      width: 56px;
-      height: 56px;
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
       background: rgba(100, 200, 100, 0.4);
       border: 2px solid rgba(120, 220, 120, 0.8);
       color: white;
-      font-size: 20px;
+      font-size: 18px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -310,6 +335,7 @@ export class MobileControls {
       -webkit-user-select: none;
     `;
     
+    utilityContainer.appendChild(fireModeBtn);
     utilityContainer.appendChild(reloadBtn);
     utilityContainer.appendChild(switchBtn);
     actionZone.appendChild(utilityContainer);
@@ -334,6 +360,7 @@ export class MobileControls {
     const fireBtn = document.getElementById('mobileFireBtn');
     const reloadBtn = document.getElementById('mobileReloadBtn');
     const switchBtn = document.getElementById('mobileSwitchBtn');
+    const fireModeBtn = document.getElementById('mobileFireModeBtn');
     
     if (fireBtn) {
       fireBtn.addEventListener('touchstart', (e) => {
@@ -378,6 +405,26 @@ export class MobileControls {
       switchBtn.addEventListener('touchend', (e) => {
         switchBtn.style.background = 'rgba(100, 200, 100, 0.4)';
         switchBtn.style.transform = 'scale(1)';
+        e.preventDefault();
+      }, { passive: false });
+    }
+    
+    if (fireModeBtn) {
+      fireModeBtn.addEventListener('touchstart', (e) => {
+        fireModeBtn.style.background = 'rgba(255, 180, 50, 0.7)';
+        fireModeBtn.style.transform = 'scale(0.95)';
+        const weapon = this.weaponManager.getCurrentWeapon();
+        if (weapon && weapon.switchFireMode()) {
+          // Update button text to show current mode
+          const mode = weapon.fireMode.toUpperCase();
+          fireModeBtn.innerHTML = mode === 'SEMI' ? 'S' : mode === 'AUTO' ? 'A' : 'B';
+        }
+        e.preventDefault();
+      }, { passive: false });
+      
+      fireModeBtn.addEventListener('touchend', (e) => {
+        fireModeBtn.style.background = 'rgba(255, 180, 50, 0.4)';
+        fireModeBtn.style.transform = 'scale(1)';
         e.preventDefault();
       }, { passive: false });
     }

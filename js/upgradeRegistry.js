@@ -11,6 +11,16 @@ export const UPGRADES = [
   value: 1000,
   cost: 1000
 },
+{
+  id: "pistol_auto",
+  name: "Auto Sear",
+  description: "Unlock automatic fire mode for the VX-9 Nightfall pistol.",
+  category: "weapon_mod",
+  type: "unlock_firemode",
+  stat: "auto",
+  value: "auto",
+  cost: 600
+},
 
 /* ================= PLAYER – SURVIVABILITY ================= */
 {
