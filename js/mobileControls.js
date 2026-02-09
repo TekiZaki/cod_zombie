@@ -163,6 +163,30 @@ export class VirtualJoystick {
     };
   }
   
+  show() {
+    const touchZone = document.getElementById('joystickZone');
+    if (touchZone) {
+      touchZone.style.pointerEvents = 'auto';
+      touchZone.style.opacity = '1';
+    }
+  }
+  
+  hide() {
+    const touchZone = document.getElementById('joystickZone');
+    if (touchZone) {
+      touchZone.style.pointerEvents = 'none';
+      touchZone.style.opacity = '0';
+    }
+    
+    // Reset joystick state when hiding
+    this.active = false;
+    this.touchId = null;
+    this.delta = { x: 0, y: 0 };
+    this.normalized = { x: 0, y: 0 };
+    this.baseElement.style.display = 'none';
+    this.stickElement.style.display = 'none';
+  }
+  
   destroy() {
     if (this.baseElement) {
       this.baseElement.remove();
@@ -185,6 +209,7 @@ export class MobileControls {
     this.reloadButtonActive = false;
     this.switchButtonActive = false;
     this.fireTouchId = null;
+    this.joystickEnabled = true; // Track joystick visibility state
     
     if (this.isMobile) {
       this.init();
@@ -200,6 +225,7 @@ export class MobileControls {
     this.createMobileUI();
     this.setupJoystick();
     this.setupActionButtons();
+    this.setupToggleButton();
     this.hideDesktopHints();
   }
   
@@ -460,6 +486,85 @@ export class MobileControls {
     }
   }
   
+  setupToggleButton() {
+    const toggleBtn = document.getElementById('joystickToggleBtn');
+    const toggleContainer = document.getElementById('joystickToggleContainer');
+    
+    if (!toggleBtn || !toggleContainer) return;
+    
+    // Only show toggle button on mobile
+    if (this.isMobile) {
+      toggleContainer.style.display = 'block';
+    } else {
+      toggleContainer.style.display = 'none';
+      return;
+    }
+    
+    toggleBtn.addEventListener('click', () => {
+      this.toggleJoystick();
+    });
+    
+    toggleBtn.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      this.toggleJoystick();
+    }, { passive: false });
+  }
+  
+  toggleJoystick() {
+    this.joystickEnabled = !this.joystickEnabled;
+    
+    const toggleBtn = document.getElementById('joystickToggleBtn');
+    const gameContainer = document.getElementById('gameContainer');
+    
+    if (this.joystickEnabled) {
+      this.showJoystick();
+      if (toggleBtn) {
+        toggleBtn.classList.remove('disabled');
+        toggleBtn.style.opacity = '1';
+      }
+      if (gameContainer) {
+        gameContainer.classList.remove('joystick-hidden');
+      }
+    } else {
+      this.hideJoystick();
+      if (toggleBtn) {
+        toggleBtn.classList.add('disabled');
+        toggleBtn.style.opacity = '0.5';
+      }
+      if (gameContainer) {
+        gameContainer.classList.add('joystick-hidden');
+      }
+    }
+  }
+  
+  showJoystick() {
+    if (this.joystick) {
+      this.joystick.show();
+    }
+    if (this.actionZone) {
+      this.actionZone.style.pointerEvents = 'auto';
+      this.actionZone.style.opacity = '1';
+    }
+  }
+  
+  hideJoystick() {
+    if (this.joystick) {
+      this.joystick.hide();
+    }
+    if (this.actionZone) {
+      this.actionZone.style.pointerEvents = 'none';
+      this.actionZone.style.opacity = '0.3';
+    }
+    
+    // Reset player movement when hiding joystick
+    this.player.moveLeft = false;
+    this.player.moveRight = false;
+    this.player.moveUp = false;
+    this.player.moveDown = false;
+    this.fireButtonActive = false;
+    this.weaponManager.stopFiring();
+  }
+  
   update() {
     if (!this.isMobile || !this.joystick) return;
     
@@ -472,8 +577,21 @@ export class MobileControls {
       this.player.moveDown = false;
       this.fireButtonActive = false;
       this.weaponManager.stopFiring();
+      
+      // Auto-hide joystick when game over or store opens
+      if (this.joystickEnabled) {
+        this.hideJoystick();
+      }
       return;
+    } else {
+      // Auto-show joystick when game resumes
+      if (this.joystickEnabled && this.actionZone) {
+        this.showJoystick();
+      }
     }
+    
+    // Only process input if joystick is enabled
+    if (!this.joystickEnabled) return;
     
     const input = this.joystick.getInput();
     

@@ -104,6 +104,17 @@
                 transform: skewX(-10deg);
             }
 
+            .menu-btn.android-download {
+                border-color: #a4de02;
+                color: #a4de02;
+            }
+
+            .menu-btn.android-download:hover {
+                background: #a4de02;
+                color: #0f172a;
+                box-shadow: 0 0 30px rgba(164, 222, 2, 0.4);
+            }
+
             .version {
                 position: absolute;
                 bottom: 20px;
@@ -123,11 +134,12 @@
 
             <div class="menu-options">
                 <a href="game.html" class="menu-btn">Deploy Unit</a>
+                <a href="cod_zombies_mobile.apk" download class="menu-btn android-download">Download APK (Android)</a>
                 <button class="menu-btn" onclick="alert('Operation Logs: Wave-based survival. Gain points for tactical upgrades. Survive.')">Intel</button>
                 <button class="menu-btn" onclick="window.close()">Terminate</button>
             </div>
 
-            <div class="version">V1.4.2-STABLE</div>
+            <div class="version">V1.6.0-STABLE</div>
         </div>
     </body>
 </html>
