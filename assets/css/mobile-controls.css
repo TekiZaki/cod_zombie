@@ -1,0 +1,117 @@
+/* assets/css/mobile-controls.css */
+
+/* Mobile Controls Container */
+#joystickZone {
+  touch-action: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+#actionZone {
+  touch-action: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Mobile Button Base Styles */
+.mobile-btn {
+  cursor: pointer;
+  transition: all 0.1s ease;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  border: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.mobile-btn:active {
+  transform: scale(0.92);
+}
+
+/* Fire Button */
+.mobile-fire-btn {
+  background: rgba(255, 80, 80, 0.4) !important;
+  border: 3px solid rgba(255, 100, 100, 0.8) !important;
+}
+
+.mobile-fire-btn:active {
+  background: rgba(255, 80, 80, 0.7) !important;
+  box-shadow: 0 0 20px rgba(255, 80, 80, 0.6);
+}
+
+/* Reload Button */
+.mobile-reload-btn {
+  background: rgba(100, 150, 255, 0.4) !important;
+  border: 2px solid rgba(120, 170, 255, 0.8) !important;
+}
+
+.mobile-reload-btn:active {
+  background: rgba(100, 150, 255, 0.7) !important;
+  box-shadow: 0 0 15px rgba(100, 150, 255, 0.6);
+}
+
+/* Switch Weapon Button */
+.mobile-switch-btn {
+  background: rgba(100, 200, 100, 0.4) !important;
+  border: 2px solid rgba(120, 220, 120, 0.8) !important;
+}
+
+.mobile-switch-btn:active {
+  background: rgba(100, 200, 100, 0.7) !important;
+  box-shadow: 0 0 15px rgba(100, 200, 100, 0.6);
+}
+
+/* Joystick Visual Elements */
+.joystick-base {
+  transition: opacity 0.15s ease;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+
+.joystick-stick {
+  transition: opacity 0.15s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Mobile-specific responsive adjustments */
+@media (max-width: 480px) {
+  .mobile-fire-btn {
+    width: 70px !important;
+    height: 70px !important;
+    font-size: 24px !important;
+  }
+  
+  .mobile-reload-btn,
+  .mobile-switch-btn {
+    width: 48px !important;
+    height: 48px !important;
+    font-size: 18px !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .mobile-fire-btn {
+    width: 90px !important;
+    height: 90px !important;
+    font-size: 32px !important;
+  }
+  
+  .mobile-reload-btn,
+  .mobile-switch-btn {
+    width: 64px !important;
+    height: 64px !important;
+    font-size: 24px !important;
+  }
+}
+
+/* Prevent text selection on mobile controls */
+#gameContainer * {
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Ensure canvas doesn't interfere with touch */
+#gameCanvas {
+  touch-action: none;
+}

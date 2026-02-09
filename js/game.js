@@ -14,6 +14,7 @@ import { Renderer } from "./renderer.js";
 import { UIManager } from "./uiManager.js";
 import { InputHandler } from "./inputHandler.js";
 import { MapManager } from "./mapManager.js";
+import { MobileControls } from "./mobileControls.js";
 import { StoreManager } from "./storeManager.js";
 import { SpecialAttackSystem } from "./zombie/specialAttack.js";
 import {
@@ -68,6 +69,7 @@ export class Game {
     // ARC-7 Vanguard removed from default loadout - now must be purchased in store
 
     this.inputHandler = new InputHandler(this.player, this, this.weaponManager);
+    this.mobileControls = new MobileControls(this, this.player, this.weaponManager);
 
     // In game.js constructor
     const svgString = `
@@ -154,6 +156,11 @@ export class Game {
 
     // Update special attacks
     this.specialAttackSystem.update(deltaTime);
+
+    // Update mobile controls
+    if (this.mobileControls) {
+      this.mobileControls.update();
+    }
 
     // Find nearest zombie for auto-aim
     let nearestZombie = null;

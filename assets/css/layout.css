@@ -4,6 +4,10 @@
     position: relative;
     width: 100%;
     height: 100%;
+    touch-action: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
     /* Subtle scanline effect for a retro-tactical look */
     background:
         linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%),
