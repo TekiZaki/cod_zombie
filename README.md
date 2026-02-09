@@ -1,56 +1,73 @@
-# 2D Tactical Zombie Survival
+# Tactical Zombie Survival Engine
 
-A fast-paced, wave-based zombie survival game built with vanilla JavaScript and HTML5 Canvas. Battle endless waves of zombies, manage your arsenal, and survive as long as possible in a dynamically changing environment.
+A sophisticated 2D wave-based survival simulation developed using vanilla JavaScript and HTML5 Canvas. This project demonstrates high-performance rendering, modular system architecture, and advanced gameplay mechanics within a browser environment.
 
-## Features
+## Project Overview
 
-- **Tactical Store & Upgrades**: Every 5 waves, access the tactical store to purchase persistent upgrades for your player, weapons, and utility modifiers.
-- **Weapon Progression**: Start with a sidearm and earn points to unlock high-tier weapons like the ARC-7 "Vanguard".
-- **Dynamic Environments**: The map is randomly generated with obstacles every wave, forcing you to adapt your tactics.
-- **High-Octane Combat**: Fast-paced movement, quick weapon handling, and intense zombie scaling.
-- **Advanced Weapon System**:
-  - **ARC-7 "Vanguard"**: An Epic assault rifle with full-auto fire and accuracy that improves during sustained fire. (Unlockable)
-  - **VX-9 "Nightfall"**: A versatile sidearm with selectable Semi-Auto and 3-Round Burst fire modes. (Starting Weapon)
-- **Auto-Aim Intelligence**: Tactical assistance system that automatically targets the nearest threat, marked with a visual indicator.
-- **Tactical HUD**: A modern, spread-out interface providing real-time data on health, ammo, wave progress, and kill counts.
-- **Progression**: Zombies grow stronger with every wave, increasing in both health and speed.
-- **Modular Architecture**: Clean, object-oriented code structure with separated managers for weapons, bullets, zombies, and collisions.
+Tactical Zombie Survival is a comprehensive framework for entity management and real-time state synchronization. It features a robust wave management system, procedural obstacle generation, and a comprehensive economy-based upgrade registry. The engine is designed to scale difficulty dynamically as the simulation progresses.
 
-## Controls
+## Key Technical Features
 
-| Key            | Action                             |
-| -------------- | ---------------------------------- |
-| **W, A, S, D** | Move Character                     |
-| **LMB (Hold)** | Fire Weapon                        |
-| **R**          | Reload                             |
-| **Q**          | Switch Weapon                      |
-| **B**          | Toggle Fire Mode (Semi/Burst/Auto) |
-| **Mouse**      | Rotation (Override Auto-Aim)       |
+### Advanced Entity Management
 
-## Technical Overview
+The simulation utilizes specialized managers for Zombies, Bullets, and Map elements. This architecture ensures decoupled logic and optimal performance during high-intensity scenarios, maintaining a consistent frame rate.
 
-### Core Components
+### Procedural Environment Generation
 
-- **Game Engine (`js/game.js`)**: Orchestrates the main loop, state management, and interaction between managers.
-- **Map Manager (`js/mapManager.js`)**: Handles procedural generation of the tactical environment.
-- **Weapon System**: Extensible base class (`weaponBase.js`) allowing for complex weapon behaviors, special effects, and multiple fire modes.
-- **Collision Detector**: Custom physics resolution for entity-to-obstacle and entity-to-entity interactions.
+Every wave initiates a new cycle of the `MapManager`, which procedurally distributes obstacles across the 2000x2000 world space. This ensures tactical variety and prevents static gameplay patterns.
 
-### UI & Styling
+### High-Fidelity Combat System
 
-The styling is modularized for easy maintenance:
+* **Variable Fire Modes**: Support for Semi-Automatic, 3-Round Burst, and Full-Automatic fire modes.
+* **Adaptive Auto-Aim**: A sophisticated targeting system that automatically prioritizes the nearest threat while allowing for mouse-controlled manual override.
+* **Collision Detection**: A custom-built collision engine handling entity-to-entity and entity-to-world interactions with physics-based resolution.
 
-- `base.css`: Core resets and fonts.
-- `hud.css`: Tactical interface and health bars.
-- `layout.css`: Canvas and container positioning.
-- `animations.css`: Reloading and UI effects.
+### Tactical Economy
 
-## Installation
+Players earn points through combat proficiency, receiving 2 points per hit and 20 points per kill. These assets can be reinvested in the system via the Tactical Store, which becomes accessible every five waves.
 
-1. Clone the repository.
-2. Open `index.html` in any modern web browser.
-3. (Optional) Use `run.bat` if on Windows to quickly launch the environment.
+## Arsenal and Upgrades
+
+### Primary Weaponry
+
+* **VX-9 "Nightfall"**: A versatile sidearm featuring selectable fire modes and high reliability.
+* **ARC-7 "Vanguard"**: A high-output assault rifle with accuracy that improves under sustained fire.
+
+### Upgrade Registry
+
+The system includes an extensive repository of upgrades categorized by operational functionality:
+
+* **Player Augmentation**: Vitality (Increased Health), Lightweight (Enhanced Mobility), Juggernaut (Damage Mitigation).
+* **Weapon Modification**: Hollow Point (Damage Output), Rapid Fire (Cycle Rate), Extended Mags (Magazine Capacity).
+* **Tactical Utility**: Deadshot (Critical Hit Probability), Scavenger (Health Recovery), Second Wind (Emergency Resuscitation).
+* **Economic Optimization**: Gold Digger (Point Multiplier), Bounty Hunter (Critical Bonuses).
+
+## Control Mapping
+
+| Command | Interaction |
+| :--- | :--- |
+| **Movement** | W, A, S, D Keys |
+| **Primary Fire** | Left Mouse Button (Hold) |
+| **Reload** | R Key |
+| **Switch Weapon** | Q Key |
+| **Fire Mode Toggle** | B Key |
+| **Aiming** | Cursor Tracking (Manual Override) |
+
+## System Installation
+
+1. **Repository Acquisition**: Clone the source code to the local directory.
+2. **Environment Execution**: Open `index.html` in any modern web browser.
+3. **Automated Launch**: Utilize `run.bat` on Windows systems for immediate environment initialization.
+
+## Architecture and Styling
+
+The codebase implements a modular CSS architecture to maintain visual consistency and performance:
+
+* **base.css**: Foundational resets and typography.
+* **hud.css**: Dynamic Heads-Up Display and health visualization logic.
+* **layout.css**: Spatial positioning and canvas scaling parameters.
+* **animations.css**: Keyframe-based UI transitions and state animations.
 
 ---
 
-_Built as a demonstration of agentic coding and modular software design._
+_Technical Implementation facilitated by Antigravity Agentic Framework._
