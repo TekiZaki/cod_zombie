@@ -48,6 +48,9 @@ export class AssaultRifleARC7Vanguard extends WeaponBase {
 
     this.firingDuration = 0;
     this.maxAccuracyBonus = 0.15;
+    
+    // Fire sound
+    this.fireSound = new Audio("assets/assault_rifle_sound.mp3");
   }
 
   _getFireData() {

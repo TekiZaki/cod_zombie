@@ -51,6 +51,9 @@ export class WeaponBase {
 
     // Reload Sound
     this.reloadSound = new Audio("assets/handgun_reload.mp3");
+    
+    // Fire Sound (can be overridden by subclasses)
+    this.fireSound = null;
   }
 
   canFire() {
@@ -96,6 +99,9 @@ export class WeaponBase {
 
     this.currentAmmo--; // Deduct ammo
     this.lastFireTime = Date.now(); // Record the fire time
+    
+    // Play fire sound
+    this.playFireSound();
 
     // If the last bullet was just fired, trigger an automatic empty reload
     if (this.currentAmmo <= 0) {
@@ -110,6 +116,17 @@ export class WeaponBase {
       accuracy: this.accuracy,
       target: this._target,
     };
+  }
+  
+  playFireSound() {
+    if (!this.fireSound) return;
+    
+    // Clone the sound to allow overlapping playback
+    const soundClone = this.fireSound.cloneNode();
+    soundClone.volume = 0.4;
+    soundClone.play().catch((e) => {
+      // Ignore audio play errors (e.g., if user hasn't interacted yet)
+    });
   }
 
   update() {

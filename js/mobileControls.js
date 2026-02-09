@@ -463,6 +463,18 @@ export class MobileControls {
   update() {
     if (!this.isMobile || !this.joystick) return;
     
+    // Disable controls during store or game over
+    if (this.game.isPaused || this.game.isGameOver) {
+      // Reset all movement when paused
+      this.player.moveLeft = false;
+      this.player.moveRight = false;
+      this.player.moveUp = false;
+      this.player.moveDown = false;
+      this.fireButtonActive = false;
+      this.weaponManager.stopFiring();
+      return;
+    }
+    
     const input = this.joystick.getInput();
     
     // Apply joystick input to player movement
@@ -473,7 +485,7 @@ export class MobileControls {
     this.player.moveDown = input.y > threshold;
     
     // Handle continuous firing
-    if (this.fireButtonActive && !this.game.isGameOver && !this.game.isPaused) {
+    if (this.fireButtonActive) {
       this.weaponManager.startFiring();
     }
   }

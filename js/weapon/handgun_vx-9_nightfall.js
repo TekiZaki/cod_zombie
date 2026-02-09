@@ -58,6 +58,9 @@ export class HandgunVX9Nightfall extends WeaponBase {
     this.consecutiveHits = 0;
     this.precisionBurstActive = false;
     this.precisionBurstTimer = null;
+    
+    // Fire sound
+    this.fireSound = new Audio("assets/pistol_sound.mp3");
   }
 
   // Override fire method to include special effects
